@@ -13,7 +13,7 @@
 ## Installing
 
 ```sh
-yarn add rea-di
+yarn add @martin_hotell/rea-di
 
 # install peer dependencies
 yarn add react injection-js tslib
