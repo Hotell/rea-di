@@ -72,14 +72,17 @@
     ]
   },
   "peerDependencies": {
+    "injection-js": ">=2.2.1",
     "tslib": ">=1.9.0",
-    "typescript": ">=2.9.0"
+    "react": ">=15"
   },
   "dependencies": {},
   "devDependencies": {
     "@types/jest": "23.1.6",
     "@types/node": "10.5.2",
     "@types/prettier": "1.13.1",
+    "@types/react": "16.4.6",
+    "@types/react-dom": "16.0.6",
     "@types/uglifyjs-webpack-plugin": "1.1.0",
     "@types/webpack": "4.4.6",
     "awesome-typescript-loader": "5.2.0",
@@ -88,10 +91,13 @@
     "cz-conventional-changelog": "2.1.0",
     "gzip-size-cli": "3.0.0",
     "husky": "1.0.0-rc.8",
+    "injection-js": "2.2.1",
     "jest": "23.4.1",
     "jest-watch-typeahead": "0.2.0",
     "lint-staged": "7.2.0",
     "prettier": "1.13.7",
+    "react": "16.4.1",
+    "react-dom": "16.4.1",
     "shx": "0.3.2",
     "standard-version": "4.4.0",
     "strip-json-comments-cli": "1.0.1",
