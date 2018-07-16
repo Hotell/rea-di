@@ -10,92 +10,188 @@
 [![styled with prettier](https://img.shields.io/badge/styled_with-prettier-ff69b4.svg)](https://github.com/prettier/prettier)
 [![Conventional Commits](https://img.shields.io/badge/Conventional%20Commits-1.0.0-yellow.svg)](https://conventionalcommits.org)
 
-1.  use it 💪
+## Installing
 
-### Webpack
+```sh
+yarn add rea-di
 
-> #### NOTE:
+# install peer dependencies
+yarn add react injection-js tslib
+
+# install Reflect API polyfill
+yarn add core-js
+```
+
+> **Note:**
 >
-> Don't forget to turn off ES modules tranpspilation to enable tree-shaking!
+> You need a polyfill for the [Reflect API](http://www.ecma-international.org/ecma-262/6.0/#sec-reflection).
+> You can use:
 >
-> - babel: `{"modules": false}`
-> - typescript: `{"module": "esnext"}`
+> - [reflect-metadata](https://www.npmjs.com/package/reflect-metadata)
+> - [`core-js` (`core-js/es7/reflect`)](https://www.npmjs.com/package/core-js)
+>
+> Also for TypeScript you will need to enable `experimentalDecorators` and `emitDecoratorMetadata` flags within your `tsconfig.json`
+
+## Getting started
+
+Create some services that need other services via DI framework ( Service === ES2015 Class )
 
 ```ts
-// main.ts or main.js
-import { Greeter } from 'my-new-library'
+// app/services.ts
 
-const mountPoint = document.getElementById('app')
-const App = () => {
-  const greeter = new Greeter('Stranger')
-  return `<h1>${greeter.greet()}</h1>`
-}
-const render = (Root: Function, where: HTMLElement) => {
-  where.innerHTML = Root()
+import 'core-js/es7/reflect';
+import { Injectable } from 'injection-js';
+
+@Injectable()
+export class Logger {
+  log(...args:any[]){...}
 }
 
-render(App, mountPoint)
+@Injectable()
+export class HttpClient {}
+
+@Injectable()
+export class UserService {
+  // constructor Injection
+  constructor(private httpClient: HttpClient, private logger: Logger) {}
+
+  getUsers(): Promise<User[]> {
+    this.logger.log('get users fetch started')
+
+    return this.httpClient.get('api/users')
+  }
+}
+
+// User Model
+export class User {
+  constructor(public id:string, public email: string, public age: number){}
+}
 ```
 
-```html
-<!-- index.htm -->
-<html>
-  <head>
-    <script src="bundle.js" async></script>
-  </head>
-  <body>
-    <div id="app"></div>
-  </body>
-</html>
+Now you'll need to register those services within your component tree via `Provider` component that will create new `ChildInjector`.
+
+> Our DI is hierarchical and only source of truth of this hierarchy is our React Component tree !
+
+So our app Component/DI tree will look like following:
+
+```
+[RootInjector]
+    |
+    V
+[ChildInjector(<App Component/>)]
+  - registered providers:
+  - Logger
+  - HttpClient
+  - UserService
+    |
+    V
+<UserModuleComponent />
+    |
+    V
+<Inject(UserService) from [ChildInjector] />
+// UserService instance will be retrieved from closest Injector, in our case 👉 ChildInjector(App Component)
+    |
+    V
+<Users props={userService instance from DI framework}>
+    |
+    V
+<UserList props={users}>
 ```
 
-### UMD/ES2015 module aware browsers ( no bundler )
+And here is implementation:
 
-```html
-<html>
-  <head>
-    <script type="module">
-      import {Greeter} from './node_modules/my-lib/esm2015/index.js'
+```tsx
+// main.ts
 
-      const App = () => {
-        const greeter = new Greeter('Stranger');
-        return `<h1>${greeter.greet()}</h1>`
-      }
-      const render = (Root, where) => {
-        where.innerHTML = Root();
-      }
+import { creaeElement } from 'react'
+import { render } from 'react-dom'
 
-      render(App, mountPoint);
-    </script>
-    <script nomodule src="node_modules/my-lib/bundles/my-new-library.umd.min.js"></script>
-    <script nomodule async>
-        var Greeter = MyLib.Greeter;
+import { App } from './app/app'
 
-        var App = function() {
-          var greeter = new Greeter('Stranger');
-          return '<h1>'+greeter.greet()+'</h1>'
-        }
-        var render = function(Root, where) {
-          where.innerHTML = Root();
-        }
+boot()
 
-        render(App, mountPoint);
-    </script>
-  </head>
-  <body>
-    <div id="app"></div>
-  </body>
-</html>
+function boot() {
+  const mountPoint = document.getElementById('app')
+  render(creaeElement(App), mountPoint)
+}
+```
+
+```tsx
+// app/app.tsx
+import React, { Component } from 'react'
+import { Provider } from 'rea-di'
+
+import { Logger, HttpClient, UserService } from './services'
+import { UserModule } from './user.module'
+
+class App extends Component {
+  render() {
+    return (
+      // We are registering or rootInjector with following services available for whole tree
+      <Provider provide={[Logger, HttpClient, UserService]}>
+        <UserModule />
+      </Provider>
+    )
+  }
+}
+```
+
+With our injector created, we can now inject our services instances anywhere within the tree.
+
+> Also this is the biggest difference and improvement in comparison with Angular. In Angular every provider is registered as global singleton ( if you don't lazy load a module or register it within @Component), With react new ChildInjector will be created anytime you use <Provide>, so you don't have to be afraid of Services leaking to the root 👌
+
+```tsx
+// app/user.module.tsx
+import React, { Component } from 'react'
+import { Inject } from 'rea-di'
+
+import { UserService } from './services'
+import { Users } from './users'
+
+class UserModule extends Component {
+  render() {
+    return (
+      // { userService: UserService } is our provider map shape which we wanna get within children function
+      <Inject provide={{ userService: UserService }}>
+        {/* old good React props Injection, no artificial syntax, just plain old React 👌 */}
+        {({ userService }) => <Users service={userService} />}
+      </Inject>
+    )
+  }
+}
+```
+
+```tsx
+// app/users.tsx
+import React, { Component } from 'react'
+
+import { UserService } from './services'
+import { UserList } from './user-list'
+
+type Props = {
+  service: UserService
+}
+type State = Readonly<typeof initialState>
+
+const initialState = {
+  users: null as User[],
+}
+
+class Users extends Component<Props, State> {
+  render() {
+    const { users } = this.state
+    return <div>{users ? 'Loading users...' : <UserList users={users} />}</div>
+  }
+  componentDidMount() {
+    // here we got our UserService instance from the closest injector ( in our case we registered only one), with appropriately resolved Logger and HttpClient services
+    this.props.service.getUsers().then((result) => {
+      this.setState({ users: result })
+    })
+  }
+}
 ```
 
 ## Publishing
-
-> #### NOTE:
->
-> you have to create npm account and register token on your machine
-> 👉 `npm adduser`
->
-> If you are using scope ( you definitely should 👌) don't forget to [`--scope`](https://docs.npmjs.com/cli/adduser#scope)
 
 Execute `yarn release` which will handle following tasks:
 
@@ -130,17 +226,30 @@ See what commands would be run, without committing to git or updating files
 
 `yarn release --dry-run`
 
-## Check what files are gonna be published to npm
+### Check what files are gonna be published to npm
 
 - `yarn pack` OR `yarn release:preflight` which will create a tarball with everything that would get published to NPM
 
-## Check size of your published NPM bundle
+## Tests
 
-`yarn size`
+Test are written and run via Jest 💪
 
-## Format and fix lint errors
+```
+yarn test
+# OR
+yarn test:watch
+```
 
-`yarn ts:style:fix`
+## Style guide
+
+To follow style guide, we got Robots for that (prettier and tslint), so they'll let you know if you screwed something but most of the time they will autofix things for you 🤖
+
+### Style guide npm scripts
+
+```sh
+#Format and fix lint errors
+yarn ts:style:fix
+```
 
 ## Generate documentation
 
@@ -155,3 +264,7 @@ See what commands would be run, without committing to git or updating files
 `yarn commit` - will invoke [commitizen CLI](https://github.com/commitizen/cz-cli)
 
 ### Troubleshooting
+
+## Licensing
+
+[MIT](./LICENSE.md) as always
