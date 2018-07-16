@@ -178,6 +178,8 @@ const initialState = {
 }
 
 class Users extends Component<Props, State> {
+  readonly state: State = initialState
+
   render() {
     const { users } = this.state
     return <div>{users ? 'Loading users...' : <UserList users={users} />}</div>
@@ -189,6 +191,131 @@ class Users extends Component<Props, State> {
     })
   }
 }
+```
+
+And that's it !
+
+### Handling state within services
+
+For developers with Angular background, storing state within Service is a must have. While that makes sense in Angular ( because handling state within Angular component is a mess ) in React this abstraction isn't needed that much as React component state is mostly sufficient for that purpose.
+
+With `react-di`, you can handle state on service layer although we encourage you to handle state internaly in `Component.state` or via some store state management library ( like Redux ).
+
+> For those familiar with `Unstated`, with `rea-di`, you got all unstated library power at your disposal within service layer and much more 🌻.
+
+Ok let's look at our previous example. We handle users array state within `Users` Component. We can make our `UserService` state aware and make it handle our state and with that remove any state from our components.
+
+```tsx
+// app/services.ts
+import { WithState } from 'rea-di'
+
+// (1) we define State type and initialState which needs to be implemented when we extend WithState
+type State = typeof Readonly<initialState>
+const initialState = {
+  users: null as User[] | null,
+}
+
+@Injectable()
+// (2) WithState<T> is a generic base class which provides `protected setState()` method and forces you to implement state within your service
+export class UserService extends WithState<State> {
+  // constructor Injection
+  constructor(private httpClient: HttpClient, private logger: Logger) {
+    // (3) we need to call super() as we are extending BaseClass
+    super()
+  }
+
+  // (4) we implement our service state
+  readonly state: State = initialState
+
+  getUsers(): Promise<User[]> {
+    this.logger.log('get users fetch started')
+
+    return this.httpClient.get('api/users').then((response)=>{
+      // (5) when http finishes, we update our service state.
+      // This state will work exactly like React state and will re-render components where it's used
+      this.setState(()=>({users:response}))
+    })
+  }
+}
+```
+
+With that implemented, we can update our `Users` component ( remove state handling from it )
+
+```tsx
+// app/users.tsx
+type Props = {
+  service: UserService
+}
+
+class Users extends Component<Props> {
+  render() {
+    const { service } = this.props
+    return (
+      <div>
+        {service.state.users ? (
+          'Loading users...'
+        ) : (
+          <UserList users={service.state.users} />
+        )}
+      </div>
+    )
+  }
+  componentDidMount() {
+    // we only trigger HTTP call via our injected service. State will be handled and updated internally in that service
+    this.props.service.getUsers()
+  }
+}
+```
+
+### How to write tests?
+
+Testing belongs to one of the main areas where DI framework shines!
+
+How to test our components with rea-di ?
+
+You just provide mocks of your services for both unit and integeation tests and you're good to go 👌. Old good React ❤️
+
+```tsx
+import { Provide } from 'rea-di'
+
+const DATA: Users[] = [
+  {
+    /* ... */
+  },
+  {
+    /* ... */
+  },
+]
+
+class UserServiceMock extends UserService {
+  getUsers = jest.fn(() => this.setState(() => ({ users: DATA })))
+}
+
+describe('<Users/> Unit Test', () => {
+  it('should fetch users and render them', () => {
+    const service = new UserServiceMock()
+    const wrapper = mount(<Users service={service} />)
+
+    expect(service.getUsers).toHaveBeenCalled()
+    expect(service.state).toEqual({ users: DATA })
+    expect(wrapper.find(UserList)).toBe(true)
+  })
+})
+
+describe('<UsersModule/> Integration Test', () => {
+  it('should fetch users and render them', () => {
+    const wrapper = mount(
+      // we create new ChildInjector with same token, just changing the Implementation that's gonna be instantiated ;)
+      <Provider provide={[{ provide: UserService, useClass: UserServiceMock }]}>
+        <UserModule />
+      </Provider>
+    )
+
+    expect(service.getUsers).toHaveBeenCalled()
+    expect(service.state).toEqual({ users: DATA })
+    expect(wrapper.find(UserList)).toBe(true)
+  })
+})
 ```
 
 ## Publishing
