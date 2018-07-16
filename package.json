@@ -2,14 +2,14 @@
   "name": "rea-di",
   "version": "0.0.1",
   "description": "Dependency injection for React done right. Hierarchical injection on both component and service layer powered by injection-js (Angular DI framework)",
-  "main": "bundles/read-di.umd.js",
+  "main": "bundles/rea-di.umd.js",
   "module": "./esm5/index.js",
   "es2015": "./esm2015/index.js",
   "typings": "./types/index.d.ts",
   "sideEffects": false,
   "repository": {
     "type": "git",
-    "url": "https://www.github.com/Hotell/read-di"
+    "url": "https://www.github.com/Hotell/rea-di"
   },
   "author": "Martin Hochel",
   "license": "MIT",

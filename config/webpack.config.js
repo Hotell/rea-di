@@ -38,16 +38,15 @@ const PATHS = {
 const DEFAULT_ENV = { dev: true }
 
 /**
- * @type {WebpackExternals}
+ * @type {WebpackExternals | WebpackExternals[]}
  */
-const EXTERNALS = {
-  // lodash: {
-  //   commonjs: 'lodash',
-  //   commonjs2: 'lodash',
-  //   amd: 'lodash',
-  //   root: '_',
-  // },
-}
+const EXTERNALS = ['react', 'react-dom', 'injection-js', 'tslib']
+// const EXTERNALS = {
+//   react: 'React',
+//   'react-dom': 'ReactDOM',
+//   'injection-js': 'InjectionJS',
+//   tslib: 'tslib',
+// }
 
 /**
  * @type {{[key:string]: WebpackRule}}
