@@ -1,4 +1,4 @@
-import { Injectable } from '@martin_hotell/rea-di/node_modules/injection-js'
+import { Injectable } from 'injection-js'
 import { WithState } from '@martin_hotell/rea-di'
 
 type State = Readonly<typeof initialState>

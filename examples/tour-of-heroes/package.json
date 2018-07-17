@@ -5,10 +5,12 @@
   "author": "Martin Hochel <hochelmartin@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "start": "parcel --no-cache src/index.html"
+    "start": "parcel --no-cache src/index.html",
+    "server": "json-server --watch src/db.json"
   },
   "dependencies": {
-    "@martin_hotell/rea-di": "../../",
+    "@martin_hotell/rea-di": "0.0.1",
+    "axios": "0.18.0",
     "core-js": "2.5.7",
     "injection-js": "2.2.1",
     "react": "16.4.1",
@@ -20,6 +22,7 @@
     "@types/react": "16.4.6",
     "@types/react-dom": "16.0.6",
     "@types/react-router-dom": "4.2.7",
+    "json-server": "0.14.0",
     "parcel-bundler": "1.9.7"
   }
 }

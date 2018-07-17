@@ -1,24 +1,39 @@
+import { Inject, Provider } from '@martin_hotell/rea-di'
 import React, { Component } from 'react'
 import {
+  BrowserRouter as Router,
   Link,
   NavLink,
-  Route,
-  BrowserRouter as Router,
   Redirect,
+  Route,
   Switch,
 } from 'react-router-dom'
-import { Provider, Inject } from '@martin_hotell/rea-di'
 
-import { Messages, MessageService } from './messages'
+import { Dashboard, HeroDetail, Heroes } from './components'
 import { HeroService } from './hero.service'
-import { Dashboard, Heroes, HeroDetail } from './components'
+import { HttpClient, HttpClientConfig } from './http-client.service'
+import { Messages, MessageService } from './messages'
 
 export class App extends Component {
   title = 'Tour of Heroes'
   render() {
     return (
       <div className="app">
-        <Provider provide={[MessageService, HeroService]}>
+        <Provider
+          provide={[
+            MessageService,
+            HeroService,
+            HttpClient,
+            {
+              provide: HttpClientConfig,
+              useValue: {
+                baseURL:
+                  // 'https://my-json-server.typicode.com/hotell/rea-di/examples',
+                  'http://localhost:3000/',
+              } as HttpClientConfig,
+            },
+          ]}
+        >
           <Router>
             <>
               <nav>
