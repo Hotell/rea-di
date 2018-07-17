@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import {
   Link,
+  NavLink,
   Route,
   BrowserRouter as Router,
   Redirect,
@@ -21,8 +22,8 @@ export class App extends Component {
           <Router>
             <>
               <nav>
-                <Link to="/dashboard">Dashboard</Link>
-                <Link to="/heroes">Heroes</Link>
+                <NavLink to="/dashboard">Dashboard</NavLink>
+                <NavLink to="/heroes">Heroes</NavLink>
               </nav>
               <Switch>
                 <Route
