@@ -1,5 +1,12 @@
 import React, { Component, createRef } from 'react'
 import { Link } from 'react-router-dom'
+import { Subject } from 'rxjs'
+import {
+  debounceTime,
+  distinctUntilChanged,
+  switchMap,
+  takeUntil,
+} from 'rxjs/operators'
 
 import { HeroService } from '../hero.service'
 import { Hero } from '../hero'
@@ -17,7 +24,21 @@ const initialState = {
 
 export class HeroSearch extends Component<Props, State> {
   readonly state: State = initialState
-  private searchResultRef = createRef<HTMLInputElement>()
+
+  private readonly searchResultRef = createRef<HTMLInputElement>()
+  private readonly searchTerms = new Subject<string>()
+  private readonly onUnmount$ = new Subject()
+  private readonly heroes$ = this.searchTerms.pipe(
+    takeUntil(this.onUnmount$),
+    // wait 300ms after each keystroke before considering the term
+    debounceTime(300),
+
+    // ignore new term if same as previous term
+    distinctUntilChanged(),
+
+    // switch to new search observable each time the term changes
+    switchMap((term: string) => this.props.heroService.searchHeroes(term))
+  )
 
   render() {
     const { heroes } = this.state
@@ -44,11 +65,17 @@ export class HeroSearch extends Component<Props, State> {
     )
   }
 
+  componentDidMount() {
+    this.heroes$.subscribe((heroes) => {
+      this.setState({ heroes })
+    })
+  }
+  componentWillUnmount() {
+    this.onUnmount$.complete()
+  }
+
   // Push a search term into the observable stream.
   private search(term: string) {
-    // this.searchTerms.next(term);
-    this.props.heroService.searchHeroes(term).then((response) => {
-      this.setState({ heroes: response })
-    })
+    this.searchTerms.next(term)
   }
 }
