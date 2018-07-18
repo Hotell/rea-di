@@ -22,6 +22,40 @@ This is the most basic example of using Rea-di for handling state on Service lay
 
 This example includes tests.
 
+## Counter With Logger
+
+Run the [Counter with Logger app](.) example:
+
+```
+git clone https://github.com/hotell/rea-di.git
+
+cd rea-di/examples/counter-with-logger
+yarn install
+yarn start
+```
+
+Or check out the [sandbox](https://codesanbox.io/).
+
+This builds on previous counter example and adds `Logger` service which is injected to `CounterService`. With that we get logs into console on every action.
+
+## Counter With multiple Injectors and hierarchies
+
+Run the [Counter with Multiple Injectors and hierarchies app](.) example:
+
+```
+git clone https://github.com/hotell/rea-di.git
+
+cd rea-di/examples/counter-with-multiple-injectors
+yarn install
+yarn start
+```
+
+Or check out the [sandbox](https://codesanbox.io/).
+
+This builds on previous **counter with logger** example and demonstrates multiple child injectors resolution and aliasing by using one common `Counter` component with different service instances injected by the same token resolved via tree hierarchy. Also it adds configurable `MultiplyCounterService`.
+
+Try to do this without DI framework... Good luck with that 😇
+
 ## Tour of Heroes
 
 Run the [Tour of Heroes](./tour-of-heroes) example:

@@ -2,7 +2,7 @@
 
 > https://angular.io/tutorial rewritten to showcase the power of rea-di + injection-js within React
 
-Run the [Tour of Heroes](./tour-of-heroes) example:
+Run the [Tour of Heroes](.) example:
 
 ```
 git clone https://github.com/hotell/rea-di.git
