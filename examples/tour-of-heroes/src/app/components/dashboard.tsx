@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom'
 
 import { HeroService } from '../hero.service'
 import { Hero } from '../hero'
+import { HeroSearch } from './hero-search'
 
 type Props = {
   heroService: HeroService
@@ -37,6 +38,8 @@ export class Dashboard extends Component<Props, State> {
               </Link>
             ))}
           </div>
+
+          <HeroSearch heroService={this.props.heroService} />
         </div>
       </>
     )

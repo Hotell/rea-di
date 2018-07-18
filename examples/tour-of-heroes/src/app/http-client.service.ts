@@ -28,7 +28,7 @@ export class HttpClient {
   get<T = any>(url: string, config?: AxiosRequestConfig): AxiosPromise<T> {
     return this.provider.get(url, config)
   }
-  delete(url: string, config?: AxiosRequestConfig): AxiosPromise {
+  delete<T = any>(url: string, config?: AxiosRequestConfig): AxiosPromise<T> {
     return this.provider.delete(url, config)
   }
   head(url: string, config?: AxiosRequestConfig): AxiosPromise {

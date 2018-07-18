@@ -14,6 +14,7 @@ type Props = {
   id: string
 }>
 type State = Readonly<ReturnType<typeof getInitialState>>
+type FormFieldKeys = 'name'
 
 const getInitialState = ({ hero = null }: Props) => ({
   hero,
@@ -24,9 +25,10 @@ export class HeroDetail extends Component<Props, State> {
 
   private handleChange = (event: SyntheticEvent<HTMLInputElement>) => {
     const { value } = event.currentTarget
-    const name = event.currentTarget.name as 'name'
+    const name = event.currentTarget.name as FormFieldKeys
+
     this.setState((prevState) => ({
-      hero: { ...prevState.hero, [name]: value } as Hero,
+      hero: { ...prevState.hero!, [name]: value },
     }))
   }
   render() {
@@ -52,9 +54,12 @@ export class HeroDetail extends Component<Props, State> {
                 />
               </label>
             </div>
+            <button onClick={() => this.save(hero)}>save</button>
             <button onClick={() => this.goBack()}>go back</button>
           </div>
-        ) : null}
+        ) : (
+          'getting Hero detail...'
+        )}
       </div>
     )
   }
@@ -62,11 +67,18 @@ export class HeroDetail extends Component<Props, State> {
     this.getHero()
   }
 
+  private save(hero: Hero) {
+    this.props.heroService.updateHero(hero).then(() => this.goBack())
+  }
   private getHero(): void {
+    if (this.state.hero) {
+      return
+    }
+
     const id = Number(this.props.match.params.id)
     this.props.heroService.getHero(id).then((hero) => this.setState({ hero }))
   }
-  private goBack(): void {
+  private goBack() {
     this.props.history.goBack()
   }
 }

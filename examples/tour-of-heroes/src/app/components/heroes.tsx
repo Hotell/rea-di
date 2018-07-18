@@ -1,4 +1,4 @@
-import React, { Component, SyntheticEvent } from 'react'
+import React, { Component, SyntheticEvent, createRef } from 'react'
 import { Link } from 'react-router-dom'
 
 import { Hero } from '../hero'
@@ -15,43 +15,43 @@ type Props = {
 type State = Readonly<typeof initialState>
 const initialState = {
   heroes: [] as Hero[],
-  selectedHero: null as Hero | null,
 }
 
 export class Heroes extends Component<Props, State> {
   readonly state = initialState
 
-  private handleChange = (event: SyntheticEvent<HTMLInputElement>) => {
-    const { value, name } = event.currentTarget
-    this.setState((prevState) => {
-      return {
-        selectedHero: { ...prevState.selectedHero, [name]: value } as Hero,
-      }
-    })
-  }
-  private onSelect(hero: Hero): void {
-    this.setState((prevState) => ({ selectedHero: hero }))
-  }
-  private get selectedHeroRef(): string {
-    const { selectedHero } = this.state
-    return selectedHero ? String(selectedHero.id) : ''
-  }
+  private heroNameRef = createRef<HTMLInputElement>()
+
   render() {
-    const { selectedHero, heroes } = this.state
+    const { heroes } = this.state
     return (
       <>
         <h2>My Heroes</h2>
 
+        <div>
+          <label>
+            Hero name:
+            <input name="heroName" defaultValue="" ref={this.heroNameRef} />
+          </label>
+          {/* (click) passes input value to add() and then clears the input  */}
+          <button onClick={() => this.add(this.heroNameRef.current!.value)}>
+            add
+          </button>
+        </div>
+
         <ul className="heroes">
           {heroes.map((hero) => (
-            <li
-              key={hero.id}
-              className={hero === selectedHero ? 'selected' : ''}
-              onClick={() => this.onSelect(hero)}
-            >
+            <li key={hero.id}>
               <Link to={`/detail/${hero.id}`}>
                 <span className="badge">{hero.id}</span> {hero.name}
               </Link>
+              <button
+                className="delete"
+                title="delete hero"
+                onClick={() => this.delete(hero)}
+              >
+                x
+              </button>
             </li>
           ))}
         </ul>
@@ -61,6 +61,33 @@ export class Heroes extends Component<Props, State> {
   componentDidMount() {
     this.props.heroService.getHeroes().then((heroes) => {
       this.setState({ heroes })
+    })
+  }
+
+  private delete(hero: Hero) {
+    const heroesWithoutRemoved = this.state.heroes.filter((h) => h !== hero)
+
+    this.props.heroService.deleteHero(hero).then(() => {
+      this.setState((prevState) => ({
+        heroes: [...heroesWithoutRemoved],
+      }))
+    })
+  }
+
+  private add(name: string) {
+    name = name.trim()
+    if (!name) {
+      return
+    }
+
+    const newHero = { name } as Hero
+    this.props.heroService.addHero(newHero).then((hero) => {
+      this.setState(
+        (prevState) => ({
+          heroes: [...prevState.heroes, hero],
+        }),
+        () => (this.heroNameRef.current!.value = '')
+      )
     })
   }
 }

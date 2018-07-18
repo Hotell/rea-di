@@ -1,11 +1,11 @@
 /* DashboardComponent's private CSS styles */
 .dashboard [class*='col-'] {
-  float: left;
-  padding-right: 20px;
-  padding-bottom: 20px;
+  display: block;
+  margin-right: 10px;
+  margin-bottom: 20px;
 }
 .dashboard [class*='col-']:last-of-type {
-  padding-right: 0;
+  margin-right: 0px;
 }
 .dashboard a {
   text-decoration: none;
@@ -26,9 +26,11 @@
 }
 .dashboard .grid {
   margin: 0;
+  display: flex;
+  flex-wrap: wrap;
 }
 .dashboard .col-1-4 {
-  width: 25%;
+  flex: 1 0 auto;
 }
 .dashboard .module {
   padding: 20px;
@@ -38,18 +40,16 @@
   min-width: 120px;
   background-color: #607d8b;
   border-radius: 2px;
+  cursor: pointer;
 }
 .dashboard .module:hover {
   background-color: #eee;
-  cursor: pointer;
   color: #607d8b;
 }
 .dashboard .grid-pad {
   padding: 10px 0;
 }
-.dashboard .grid-pad > [class*='col-']:last-of-type {
-  padding-right: 20px;
-}
+
 @media (max-width: 600px) {
   .dashboard .module {
     font-size: 10px;
