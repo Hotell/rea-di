@@ -1,0 +1,44 @@
+/* HeroSearch private styles */
+.hero-search {
+}
+
+.hero-search [name='searchBox'] {
+  width: 200px;
+  padding: 5px;
+}
+
+.search-result {
+  width: 200px;
+  margin-top: 0;
+  padding-left: 0;
+}
+
+.search-result li {
+  border: 1px solid gray;
+  border-top: none;
+  padding: 5px;
+  background-color: white;
+  cursor: pointer;
+  list-style-type: none;
+}
+
+.search-result li:hover {
+  background-color: #607d8b;
+}
+
+.search-result li a {
+  color: #888;
+  display: block;
+  text-decoration: none;
+}
+
+.search-result li a:hover,
+.search-result li a:active {
+  color: white;
+}
+
+/*
+Copyright 2017-2018 Google Inc. All Rights Reserved.
+Use of this source code is governed by an MIT-style license that
+can be found in the LICENSE file at http://angular.io/license
+*/

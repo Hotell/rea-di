@@ -1,0 +1,66 @@
+/* DashboardComponent's private CSS styles */
+.dashboard [class*='col-'] {
+  display: block;
+  margin-right: 10px;
+  margin-bottom: 20px;
+}
+.dashboard [class*='col-']:last-of-type {
+  margin-right: 0px;
+}
+.dashboard a {
+  text-decoration: none;
+}
+.dashboard *,
+.dashboard *:after,
+.dashboard *:before {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+.dashboard h3 {
+  text-align: center;
+  margin-bottom: 0;
+}
+.dashboard h4 {
+  position: relative;
+}
+.dashboard .grid {
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+}
+.dashboard .col-1-4 {
+  flex: 1 0 auto;
+}
+.dashboard .module {
+  padding: 20px;
+  text-align: center;
+  color: #eee;
+  max-height: 120px;
+  min-width: 120px;
+  background-color: #607d8b;
+  border-radius: 2px;
+  cursor: pointer;
+}
+.dashboard .module:hover {
+  background-color: #eee;
+  color: #607d8b;
+}
+.dashboard .grid-pad {
+  padding: 10px 0;
+}
+
+@media (max-width: 600px) {
+  .dashboard .module {
+    font-size: 10px;
+    max-height: 75px;
+  }
+}
+@media (max-width: 1024px) {
+  .dashboard .grid {
+    margin: 0;
+  }
+  .dashboard .module {
+    min-width: 60px;
+  }
+}
