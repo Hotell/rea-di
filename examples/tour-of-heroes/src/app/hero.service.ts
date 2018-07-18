@@ -1,8 +1,8 @@
 import { Injectable } from 'injection-js'
 
-import { MessageService } from './messages'
 import { Hero } from './hero'
 import { HttpClient } from './http-client.service'
+import { MessageService } from './messages'
 
 @Injectable()
 export class HeroService {
@@ -17,6 +17,7 @@ export class HeroService {
       .get<Hero[]>(this.heroesUrl)
       .then((response) => {
         this.messageService.add('HeroService: fetched heroes')
+
         return response.data
       })
       .catch(this.handleError('getHeroes', [] as Hero[]))
