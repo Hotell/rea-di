@@ -11,3 +11,7 @@ yarn start
 ```
 
 Or check out the [sandbox](https://codesanbox.io/).
+
+## Injector tree
+
+![Injector tree](../img/counter-di.png)
