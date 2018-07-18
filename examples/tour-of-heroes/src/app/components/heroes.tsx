@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom'
 
 import { Hero } from '../hero'
 import { uppercase } from '../shared'
-import { HEROES } from '../mock-heroes'
 
 import './heroes.css'
 import { HeroDetail } from './hero-detail'
