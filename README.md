@@ -5,7 +5,7 @@
 [![Greenkeeper badge](https://badges.greenkeeper.io/Hotell/rea-di.svg)](https://greenkeeper.io/)
 
 [![Build Status](https://travis-ci.org/Hotell/rea-di.svg?branch=master)](https://travis-ci.org/Hotell/rea-di)
-[![NPM version](https://img.shields.io/npm/v/standard-version.svg)](https://www.npmjs.com/package/rea-di)
+[![NPM version](https://img.shields.io/npm/v/%40martin_hotell%2Frea-di.svg)](https://www.npmjs.com/package/@martin_hotell/rea-di)
 [![Standard Version](https://img.shields.io/badge/release-standard%20version-brightgreen.svg)](https://github.com/conventional-changelog/standard-version)
 [![styled with prettier](https://img.shields.io/badge/styled_with-prettier-ff69b4.svg)](https://github.com/prettier/prettier)
 [![Conventional Commits](https://img.shields.io/badge/Conventional%20Commits-1.0.0-yellow.svg)](https://conventionalcommits.org)
