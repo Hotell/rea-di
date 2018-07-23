@@ -103,7 +103,7 @@ And here is implementation:
 ```tsx
 // main.ts
 
-import { creaeElement } from 'react'
+import { createElement } from 'react'
 import { render } from 'react-dom'
 
 import { App } from './app/app'
@@ -112,7 +112,7 @@ boot()
 
 function boot() {
   const mountPoint = document.getElementById('app')
-  render(creaeElement(App), mountPoint)
+  render(createElement(App), mountPoint)
 }
 ```
 
@@ -195,11 +195,30 @@ class Users extends Component<Props, State> {
 
 And that's it !
 
+## API
+
+> rea-di API is very tiny 👌.
+
+There are 2 components for registering and injecting services and 2 HoC components which just leverage former under the hood (if that's your preferred way of composition).
+
+- `<Provider provide={[ServiceOne]}>...your tree...</Provider>`
+- `withProvider({provide: [ServiceOne]})(MyParentComponent)`
+- `<Inject providers={{serviceOne:ServiceOne}}>{({serviceOne})=>...}</Inject>`
+- `withInjectables({serviceOne:ServiceOne})(MyComponentWithInjectables)`
+
+- `WithState<T>` abstract class which implements `setState` on your service class. If you wanna handle state within your service you need to extend from this Base class and implement `state`, exactly like you would with `React.Component`
+
+## Examples
+
+Go checkout [examples](./examples) !
+
+## Guides
+
 ### Handling state within services
 
 For developers with Angular background, storing state within Service is a must have. While that makes sense in Angular ( because handling state within Angular component is a mess ) in React this abstraction isn't needed that much as React component state is mostly sufficient for that purpose.
 
-With `react-di`, you can handle state on service layer although we encourage you to handle state internaly in `Component.state` or via some store state management library ( like Redux ).
+With `react-di`, you can handle state on service layer although we encourage you to handle state internally in `Component.state` or via some store state management library ( like Redux ).
 
 > For those familiar with `Unstated`, with `rea-di`, you got all unstated library power at your disposal within service layer and much more 🌻.
 
