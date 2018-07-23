@@ -1,0 +1,143 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Hoc wrappers should work with HoC 1`] = `
+<App>
+  <main>
+    <WithProvider(CounterModule
+      title="count module"
+    >
+      <Provider
+        provide={
+          Array [
+            [Function],
+            [Function],
+          ]
+        }
+      >
+        <CounterModule
+          title="count module"
+        >
+          <div>
+            <h3>
+              count module
+            </h3>
+            <WithInjectables(Counter)>
+              <Inject
+                providers={
+                  Object {
+                    "counterService": [Function],
+                    "logger": [Function],
+                  }
+                }
+              >
+                <Counter
+                  counterService={
+                    CounterService {
+                      "logger": Logger {},
+                      "setState": [Function],
+                      "state": Object {
+                        "count": 0,
+                      },
+                    }
+                  }
+                  injector={
+                    ReflectiveInjector_ {
+                      "_constructionCounter": 2,
+                      "_parent": ReflectiveInjector_ {
+                        "_constructionCounter": 0,
+                        "_parent": null,
+                        "_providers": Array [],
+                        "keyIds": Array [],
+                        "objs": Array [],
+                      },
+                      "_providers": Array [
+                        ResolvedReflectiveProvider_ {
+                          "key": ReflectiveKey {
+                            "id": 1,
+                            "token": [Function],
+                          },
+                          "multiProvider": false,
+                          "resolvedFactories": Array [
+                            ResolvedReflectiveFactory {
+                              "dependencies": Array [],
+                              "factory": [Function],
+                            },
+                          ],
+                        },
+                        ResolvedReflectiveProvider_ {
+                          "key": ReflectiveKey {
+                            "id": 2,
+                            "token": [Function],
+                          },
+                          "multiProvider": false,
+                          "resolvedFactories": Array [
+                            ResolvedReflectiveFactory {
+                              "dependencies": Array [
+                                ReflectiveDependency {
+                                  "key": ReflectiveKey {
+                                    "id": 1,
+                                    "token": [Function],
+                                  },
+                                  "optional": false,
+                                  "visibility": null,
+                                },
+                              ],
+                              "factory": [Function],
+                            },
+                          ],
+                        },
+                      ],
+                      "keyIds": Array [
+                        1,
+                        2,
+                      ],
+                      "objs": Array [
+                        Logger {},
+                        CounterService {
+                          "logger": Logger {},
+                          "setState": [Function],
+                          "state": Object {
+                            "count": 0,
+                          },
+                        },
+                      ],
+                    }
+                  }
+                  logger={Logger {}}
+                >
+                  <div
+                    className="counter"
+                  >
+                    <h4>
+                      Counter
+                    </h4>
+                    <p>
+                      Count: 
+                      0
+                    </p>
+                    <button
+                      onClick={[Function]}
+                    >
+                      increment
+                    </button>
+                    <button
+                      onClick={[Function]}
+                    >
+                      decrement
+                    </button>
+                    <section
+                      className="children-section"
+                    >
+                      Hello projection
+                    </section>
+                  </div>
+                </Counter>
+              </Inject>
+            </WithInjectables(Counter)>
+          </div>
+        </CounterModule>
+      </Provider>
+    </WithProvider(CounterModule>
+  </main>
+</App>
+`;
