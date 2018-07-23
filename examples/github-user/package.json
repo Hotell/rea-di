@@ -1,0 +1,25 @@
+{
+  "name": "github-user-example",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "Martin Hochel <hochelmartin@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "start": "parcel --no-cache src/index.html"
+  },
+  "dependencies": {
+    "@martin_hotell/axios-http": "0.3.0",
+    "@martin_hotell/rea-di": "0.1.0",
+    "axios": "0.18.0",
+    "core-js": "2.5.7",
+    "injection-js": "2.2.1",
+    "react": "16.4.1",
+    "react-dom": "16.4.1",
+    "tslib": "1.9.3"
+  },
+  "devDependencies": {
+    "@types/react": "16.4.6",
+    "@types/react-dom": "16.0.6",
+    "parcel-bundler": "1.9.7"
+  }
+}
