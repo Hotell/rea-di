@@ -2,7 +2,7 @@ import { Provider as ProviderConfig } from 'injection-js'
 import React, { Component, ComponentType } from 'react'
 
 import { getComponentDisplayName } from './helpers'
-import { Provider } from './provide'
+import { Provider } from './provider'
 import { WrapperProps } from './types'
 
 type ProvidersSetup = { provide: ProviderConfig[] }
