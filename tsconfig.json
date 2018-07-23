@@ -22,7 +22,9 @@
     "declarationMap": true,
     "stripInternal": true,
     "resolveJsonModule": true,
-    "importHelpers": true
+    "importHelpers": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true
   },
   "include": [
     "./src"

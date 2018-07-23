@@ -34,6 +34,8 @@ const config = {
     },
   },
   setupFiles: ['<rootDir>/config/setup-tests.js'],
+  setupTestFrameworkScriptFile: '<rootDir>/config/setup-enzyme.js',
+  snapshotSerializers: ['enzyme-to-json/serializer'],
   watchPlugins: [
     'jest-watch-typeahead/filename',
     'jest-watch-typeahead/testname',

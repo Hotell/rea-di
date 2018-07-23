@@ -78,6 +78,8 @@
   },
   "dependencies": {},
   "devDependencies": {
+    "@types/enzyme": "3.1.12",
+    "@types/enzyme-adapter-react-16": "1.0.2",
     "@types/jest": "23.1.6",
     "@types/node": "10.5.2",
     "@types/prettier": "1.13.2",
@@ -89,6 +91,9 @@
     "commitizen": "2.10.1",
     "cross-var": "1.1.0",
     "cz-conventional-changelog": "2.1.0",
+    "enzyme": "3.3.0",
+    "enzyme-adapter-react-16": "npm:enzyme-react-adapter-future",
+    "enzyme-to-json": "3.3.4",
     "gzip-size-cli": "3.0.0",
     "husky": "1.0.0-rc.8",
     "injection-js": "2.2.1",
