@@ -1,5 +1,6 @@
-import { Injectable } from 'injection-js'
+// tslint:disable:no-magic-numbers
 import { WithState } from '@martin_hotell/rea-di'
+import { Injectable } from 'injection-js'
 
 type State = Readonly<typeof initialState>
 const initialState = {
@@ -8,25 +9,20 @@ const initialState = {
 
 @Injectable()
 export class CounterService extends WithState<State> {
-  readonly state = initialState
+  readonly state: State = initialState
 
-  get value() {
-    return this.state.count
-  }
-
-  onIncrement() {
+  increment() {
     this.setState((prevState) => ({ count: prevState.count + 1 }))
   }
-  onDecrement() {
+  decrement() {
     this.setState((prevState) => ({ count: prevState.count - 1 }))
   }
   incrementIfOdd() {
     if (this.state.count % 2 !== 0) {
-      this.onIncrement()
+      this.increment()
     }
   }
-
   incrementAsync() {
-    setTimeout(() => this.onIncrement(), 1000)
+    setTimeout(() => this.increment(), 1000)
   }
 }
