@@ -1,13 +1,13 @@
-import { ReflectiveInjector, Type } from 'injection-js'
+import { ReflectiveInjector } from 'injection-js'
 import React, { Component, ReactNode } from 'react'
 
 import { Context, ContextApi } from './context'
+import { ProvidersMap } from './types'
 
 type InjectProps<T extends ProvidersMap> = {
   providers: T
   children: (resolvedInjectables: ResolvedInjectables<T>) => ReactNode
 }
-type ProvidersMap<T = any> = { [key: string]: Type<T> }
 type ResolvedInjectables<T extends ProvidersMap> = {
   [P in keyof T]: T[P]['prototype']
 } & {

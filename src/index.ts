@@ -1,5 +1,5 @@
 export { Inject } from './inject'
-export { Provider } from './provide'
+export { Provider } from './provider'
 export { WithState } from './with-state'
 export { AsyncPipe } from './async-pipe'
 export { withInjectables } from './with-injectables'
