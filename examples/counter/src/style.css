@@ -17,7 +17,8 @@ body,
 input[text],
 button {
   color: #888;
-  font-family: Cambria, Georgia;
+  font-family: sans-serif;
+  font-size: 1rem;
 }
 a {
   cursor: pointer;
@@ -30,7 +31,6 @@ button {
   padding: 5px 10px;
   border-radius: 4px;
   cursor: pointer;
-  cursor: hand;
 }
 button:hover {
   background-color: #cfd8dc;
