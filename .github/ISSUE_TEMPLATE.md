@@ -4,7 +4,7 @@
 
 ## Bug report
 
-- {library-name} version: _x.x.x_ (<!-- (run `npm list {library-name}` from a terminal/cmd prompt): -->)
+- rea-di version: _x.x.x_ (<!-- (run `npm list @martin_hotell/rea-di` from a terminal/cmd prompt): -->)
 - Affected browsers (and versions): _IE 10_
 
 ### Current behaviour

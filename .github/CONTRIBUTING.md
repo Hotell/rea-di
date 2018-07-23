@@ -1,6 +1,6 @@
 # Contributing
 
-First of all, thanks for your interest in contributing to the {library-name}! 🎉
+First of all, thanks for your interest in contributing to the rea-di! 🎉
 
 PRs are the preferred way to spike ideas and address issues, if you have time. If you plan on contributing frequently, please feel free to ask to become a maintainer; the more the merrier. 🤙
 
