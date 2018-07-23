@@ -17,17 +17,17 @@
     "node": ">=8"
   },
   "scripts": {
-    "cleanup": "shx rm -rf bundles esm5 esm2015 fesm types coverage docs package",
+    "cleanup": "shx rm -rf dist",
     "prebuild": "npm run cleanup && npm run verify",
-    "build": "tsc && tsc --target es2018 --outDir esm2015 && webpack --progress --config config/webpack.config.js && webpack --env.prod --progress --config config/webpack.config.js",
-    "postbuild": "npm run size",
+    "build": "tsc && tsc --target es2018 --outDir dist/esm2015 && webpack --progress --config config/webpack.config.js && webpack --env.prod --progress --config config/webpack.config.js",
+    "postbuild": "node scripts/copy.js && npm run size",
     "docs": "typedoc -p . --theme minimal --target 'es6' --excludeNotExported --excludePrivate --ignoreCompilerErrors --exclude \"**/src/**/__tests__/*.*\" --out docs src/",
     "test": "jest -c ./config/jest.config.js",
     "test:watch": "npm t -- --watch",
     "test:coverage": "npm t -- --coverage",
     "test:ci": "npm t -- --ci",
-    "validate-config": "tsc -p ./config",
-    "verify": "npm run validate-config && npm run style && npm run test:ci",
+    "validate-js": "tsc -p ./config && tsc -p ./scripts",
+    "verify": "npm run validate-js && npm run style && npm run test:ci",
     "commit": "git-cz",
     "style": "npm run format -- --list-different && npm run lint",
     "style:fix": "npm run format:fix && npm run lint:fix",
@@ -39,11 +39,11 @@
     "release": "standard-version",
     "postrelease": "npm run release:github && npm run release:npm",
     "release:github": "git push --no-verify --follow-tags origin master",
-    "release:npm": "npm publish",
-    "release:preflight": "npm pack",
+    "release:npm": "cd dist && npm publish",
+    "release:preflight": "cd dist && npm pack",
     "size": "npm run size:umd && npm run size:fasm",
-    "size:umd": "shx echo \"Gzipped UMD bundle Size:\" && cross-var strip-json-comments --no-whitespace $npm_package_main | gzip-size",
-    "size:fasm": "shx echo \"Gzipped FESM bundle Size:\" && strip-json-comments --no-whitespace \"./fesm/index.js\" | gzip-size"
+    "size:umd": "shx echo \"Gzipped UMD bundle Size:\" && cross-var strip-json-comments --no-whitespace dist/$npm_package_main | gzip-size",
+    "size:fasm": "shx echo \"Gzipped FESM bundle Size:\" && strip-json-comments --no-whitespace \"./dist/fesm/index.js\" | gzip-size"
   },
   "config": {
     "commitizen": {
@@ -73,18 +73,18 @@
   },
   "peerDependencies": {
     "injection-js": ">=2.2.1",
-    "tslib": ">=1.9.0",
-    "react": ">=15"
+    "react": ">=15",
+    "tslib": ">=1.9.0"
   },
   "dependencies": {},
   "devDependencies": {
     "@types/jest": "23.1.6",
     "@types/node": "10.5.2",
-    "@types/prettier": "1.13.1",
+    "@types/prettier": "1.13.2",
     "@types/react": "16.4.6",
     "@types/react-dom": "16.0.6",
     "@types/uglifyjs-webpack-plugin": "1.1.0",
-    "@types/webpack": "4.4.6",
+    "@types/webpack": "4.4.7",
     "awesome-typescript-loader": "5.2.0",
     "commitizen": "2.10.1",
     "cross-var": "1.1.0",
@@ -101,18 +101,18 @@
     "shx": "0.3.2",
     "standard-version": "4.4.0",
     "strip-json-comments-cli": "1.0.1",
-    "ts-jest": "22.4.6",
+    "ts-jest": "23.0.1",
     "tslib": "1.9.3",
-    "tslint": "5.10.0",
-    "tslint-config-prettier": "1.13.0",
+    "tslint": "5.11.0",
+    "tslint-config-prettier": "1.14.0",
     "tslint-config-standard": "7.1.0",
     "tslint-react": "3.6.0",
     "typedoc": "0.11.1",
     "typescript": "2.9.2",
     "uglifyjs-webpack-plugin": "1.2.7",
     "validate-commit-msg": "2.14.0",
-    "webpack": "4.16.1",
-    "webpack-cli": "3.0.8",
+    "webpack": "4.16.2",
+    "webpack-cli": "3.1.0",
     "webpack-config-utils": "2.3.0"
   }
 }

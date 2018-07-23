@@ -273,7 +273,7 @@ Testing belongs to one of the main areas where DI framework shines!
 
 How to test our components with rea-di ?
 
-You just provide mocks of your services for both unit and integeation tests and you're good to go 👌. Old good React ❤️
+You just provide mocks of your services for both unit and integration tests and you're good to go 👌. Old good React ❤️
 
 ```tsx
 import { Provide } from 'rea-di'
@@ -318,6 +318,8 @@ describe('<UsersModule/> Integration Test', () => {
 })
 ```
 
+---
+
 ## Publishing
 
 Execute `yarn release` which will handle following tasks:
@@ -328,10 +330,6 @@ Execute `yarn release` which will handle following tasks:
 - publish build packages to npm
 
 > releases are handled by awesome [standard-version](https://github.com/conventional-changelog/standard-version)
-
-### Initial Release (without bumping package.json version):
-
-`yarn release --first-release`
 
 ### Pre-release
 
@@ -369,7 +367,7 @@ yarn test:watch
 
 ## Style guide
 
-To follow style guide, we got Robots for that (prettier and tslint), so they'll let you know if you screwed something but most of the time they will autofix things for you 🤖
+Style guides are enforced by robots, I meant prettier and tslint of course 🤖 , so they'll let you know if you screwed something, but most of the time, they'll autofix things for you. Magic right ?
 
 ### Style guide npm scripts
 
@@ -384,9 +382,9 @@ yarn ts:style:fix
 
 ## Commit ( via commitizen )
 
-- this is preferred way how to create convetional-changelog valid commits
-- if you preffer your custom tool we provide a commit hook linter which will error out, it you provide invalid commit message
-- if you are in rush and just wanna skip commit message valiation just prefix your message with `WIP: something done` ( if you do this please squash your work when you're done with proper commit message so standard-version can create Changelog and bump version of your library appropriately )
+- this is preferred way how to create conventional-changelog valid commits
+- if you prefer your custom tool we provide a commit hook linter which will error out, it you provide invalid commit message
+- if you are in rush and just wanna skip commit message validation just prefix your message with `WIP: something done` ( if you do this please squash your work when you're done with proper commit message so standard-version can create Changelog and bump version of your library appropriately )
 
 `yarn commit` - will invoke [commitizen CLI](https://github.com/commitizen/cz-cli)
 
