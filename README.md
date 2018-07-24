@@ -1,6 +1,8 @@
-# rea-di ( pronounced Ready 🤙)
+# rea-di
 
-> Dependency injection for React done right. Hierarchical injection on both component and service layer powered by [injection-js](https://github.com/mgechev/injection-js) (Angular DI framework) 🖖
+> Dependency injection for React done right. Hierarchical injection on both component and service layer powered by [injection-js](https://github.com/mgechev/injection-js) (Angular DI framework without Angular dependency 💪) 🖖
+>
+> rea-di [pronounced "Ready" 🤙]
 
 [![Greenkeeper badge](https://badges.greenkeeper.io/Hotell/rea-di.svg)](https://greenkeeper.io/)
 
@@ -25,179 +27,91 @@ yarn add core-js
 > **Note:**
 >
 > You need a polyfill for the [Reflect API](http://www.ecma-international.org/ecma-262/6.0/#sec-reflection).
-> You can use:
+> You can use one of:
 >
 > - [reflect-metadata](https://www.npmjs.com/package/reflect-metadata)
-> - [`core-js` (`core-js/es7/reflect`)](https://www.npmjs.com/package/core-js)
+> - [core-js (`core-js/es7/reflect`)](https://www.npmjs.com/package/core-js)
 >
 > Also for TypeScript you will need to enable `experimentalDecorators` and `emitDecoratorMetadata` flags within your `tsconfig.json`
 
 ## Getting started
 
-Create some services that need other services via DI framework ( Service === ES2015 Class )
-
-```ts
-// app/services.ts
-
-import 'core-js/es7/reflect';
-import { Injectable } from 'injection-js';
-
-@Injectable()
-export class Logger {
-  log(...args:any[]){...}
-}
-
-@Injectable()
-export class HttpClient {}
-
-@Injectable()
-export class UserService {
-  // constructor Injection
-  constructor(private httpClient: HttpClient, private logger: Logger) {}
-
-  getUsers(): Promise<User[]> {
-    this.logger.log('get users fetch started')
-
-    return this.httpClient.get('api/users')
-  }
-}
-
-// User Model
-export class User {
-  constructor(public id:string, public email: string, public age: number){}
-}
-```
-
-Now you'll need to register those services within your component tree via `Provider` component that will create new `ChildInjector`.
-
-> Our DI is hierarchical and only source of truth of this hierarchy is our React Component tree !
-
-So our app Component/DI tree will look like following:
-
-```
-[RootInjector]
-    |
-    V
-[ChildInjector(<App Component/>)]
-  - registered providers:
-  - Logger
-  - HttpClient
-  - UserService
-    |
-    V
-<UserModuleComponent />
-    |
-    V
-<Inject(UserService) from [ChildInjector] />
-// UserService instance will be retrieved from closest Injector, in our case 👉 ChildInjector(App Component)
-    |
-    V
-<Users props={userService instance from DI framework}>
-    |
-    V
-<UserList props={users}>
-```
-
-And here is implementation:
+Let's demonstrate simple usage with old good Counter example:
 
 ```tsx
-// main.ts
-
-import { createElement } from 'react'
+import React from 'react'
 import { render } from 'react-dom'
 
-import { App } from './app/app'
+// we create injectable and state aware service
 
-boot()
-
-function boot() {
-  const mountPoint = document.getElementById('app')
-  render(createElement(App), mountPoint)
+type State = Readonly<typeof initialState>
+const initialState = {
+  count: 0,
 }
-```
 
-```tsx
-// app/app.tsx
-import React, { Component } from 'react'
-import { Provider } from 'rea-di'
+@Injectable()
+export class CounterService extends WithState<State> {
+  readonly state: State = initialState
 
-import { Logger, HttpClient, UserService } from './services'
-import { UserModule } from './user.module'
+  increment() {
+    this.setState((prevState) => ({ count: prevState.count + 1 }))
+  }
+  decrement() {
+    this.setState((prevState) => ({ count: prevState.count - 1 }))
+  }
+  incrementIfOdd() {
+    if (this.state.count % 2 !== 0) {
+      this.increment()
+    }
+  }
 
-class App extends Component {
-  render() {
-    return (
-      // We are registering or rootInjector with following services available for whole tree
-      <Provider provide={[Logger, HttpClient, UserService]}>
-        <UserModule />
-      </Provider>
-    )
+  incrementAsync() {
+    setTimeout(() => this.increment(), 1000)
   }
 }
-```
 
-With our injector created, we can now inject our services instances anywhere within the tree.
-
-> Also this is the biggest difference and improvement in comparison with Angular. In Angular every provider is registered as global singleton ( if you don't lazy load a module or register it within @Component), With react new ChildInjector will be created anytime you use <Provide>, so you don't have to be afraid of Services leaking to the root 👌
-
-```tsx
-// app/user.module.tsx
-import React, { Component } from 'react'
-import { Inject } from 'rea-di'
-
-import { UserService } from './services'
-import { Users } from './users'
-
-class UserModule extends Component {
+export class Counter extends Component {
   render() {
     return (
-      // { userService: UserService } is our provider map shape which we wanna get within children function
-      <Inject provide={{ userService: UserService }}>
-        {/* old good React props Injection, no artificial syntax, just plain old React 👌 */}
-        {({ userService }) => <Users service={userService} />}
+      // we inject CounterService instance mapped to counterService key, which will be provided by closest parent Injector ( in our case we created parent <Provider/> )
+      // Now our injectables object map will be available within render prop, by the name that we mapped to `{ counterService: CounterService }` -> ({ counterService }) => (...)
+      <Inject providers={{ counterService: CounterService }}>
+        {({ counterService }) => (
+          <p>
+            Clicked: {counterService.state.count} times
+            <button onClick={() => counterService.increment()}>+</button>
+            <button onClick={() => counterService.decrement()}>-</button>
+            <button onClick={() => counterService.incrementIfOdd()}>
+              Increment if odd
+            </button>
+            <button onClick={() => counterService.incrementAsync()}>
+              Increment async
+            </button>
+          </p>
+        )}
       </Inject>
     )
   }
 }
+
+render(
+  // We create Parent Injector via Provider component which will resolve CounterService and thus will make it available within whole app tree
+  <Provider provide={[CounterService]}>
+    <Counter />
+  </Provider>,
+  document.getElementById('root')
+)
 ```
 
-```tsx
-// app/users.tsx
-import React, { Component } from 'react'
+For more examples, see the following examples section 👀
 
-import { UserService } from './services'
-import { UserList } from './user-list'
+## Examples
 
-type Props = {
-  service: UserService
-}
-type State = Readonly<typeof initialState>
-
-const initialState = {
-  users: null as User[],
-}
-
-class Users extends Component<Props, State> {
-  readonly state: State = initialState
-
-  render() {
-    const { users } = this.state
-    return <div>{users ? 'Loading users...' : <UserList users={users} />}</div>
-  }
-  componentDidMount() {
-    // here we got our UserService instance from the closest injector ( in our case we registered only one), with appropriately resolved Logger and HttpClient services
-    this.props.service.getUsers().then((result) => {
-      this.setState({ users: result })
-    })
-  }
-}
-```
-
-And that's it !
+Go checkout [examples](./examples) !
 
 ## API
 
-> rea-di API is very tiny 👌.
+> rea-di API is tiny 👌. It starts and ends with components and javascript, 2 core things that we love React for ❤️
 
 There are 2 components for registering and injecting services and 2 HoC components which just leverage former under the hood (if that's your preferred way of composition).
 
@@ -208,11 +122,288 @@ There are 2 components for registering and injecting services and 2 HoC componen
 
 - `WithState<T>` abstract class which implements `setState` on your service class. If you wanna handle state within your service you need to extend from this Base class and implement `state`, exactly like you would with `React.Component`
 
-## Examples
-
-Go checkout [examples](./examples) !
-
 ## Guides
+
+Let's build a simple github user search app, by leveraging `rea-di`.
+
+This is what we're gonna build: ![github User Search app](./examples/img/github-user-search.gif)
+
+And this is how DI tree will look like ![github User Search app DI tree](./examples/img/github-search-di.png)
+
+> For complete implementation/demo checkout [examples](./examples/github-user)
+
+1.  Implementing GithubUserService
+
+We need implement our service, which is a pure javascript class with to encapsulate logic for fetching user data from github. To make it work with `rea-di` and `injection-js` we need to annotate our class with `@Injectable()` decorator. Now we can leverage dependency injection via constructor injection, and inject an `HttpClient` [axios-http](https://github.com/Hotell/axios-http), which will be used for XHR.
+
+We will implement 3 methods, for getting user info, user repos and one aggregated method for getting both.
+
+```tsx
+// user.service.ts
+import { HttpClient } from '@martin_hotell/axios-http'
+import { Injectable } from 'injection-js'
+
+import { GithubUserRepo } from './repo.model'
+import { GithubUser } from './user.model'
+
+const endpointPath = 'users'
+
+@Injectable()
+export class GithubUserService {
+  constructor(private http: HttpClient) {}
+  getRepos(username: string) {
+    return this.http.get<GithubUserRepo[]>(`${endpointPath}/${username}/repos`)
+  }
+
+  getUserInfo(username: string) {
+    return this.http.get<GithubUser>(`${endpointPath}/${username}`)
+  }
+
+  getGithubInfo(username: string) {
+    return Promise.all([
+      this.getRepos(username),
+      this.getUserInfo(username),
+    ]).then(([repos, bio]) => ({ repos: repos.data, bio: bio.data }))
+  }
+}
+```
+
+1.  Wiring our app DI capabilities to React component tree via `rea-di`
+
+Now let's wire our service with our React component tree:
+
+```tsx
+// app.tsx
+import { registerHttpClientProviders } from '@martin_hotell/axios-http'
+import { Provider } from '@martin_hotell/rea-di'
+
+import { Profile } from './components/profile'
+import SearchUser from './components/search-user'
+import { GithubUserService } from './user.service'
+
+export class App extends Component {
+  render() {
+    return (
+      <div>
+        <h1>GitHub User Search 👀</h1>
+        <Provider
+          provide={[
+            registerHttpClientProviders({ baseURL: 'https://api.github.com' }),
+            GithubUserService,
+          ]}
+        >
+          <SearchUser />
+          <Profile />
+        </Provider>
+      </div>
+    )
+  }
+}
+```
+
+Quite a lot happening there, let's go step by step
+
+So we are using `<Provider>` component which has one prop, `provide`. We need to pass here all providers that we wanna make available for all descendant components on the tree from our injector.
+
+In our case we need to register 2 Providers:
+
+- registerHttpClientProviders - function provided by axios-http, which registers all internal providers and makes `HttpClient` injectable
+- GithubUserService - our injectable service class
+
+```tsx
+<Provider
+  provide={[
+    registerHttpClientProviders({ baseURL: 'https://api.github.com' }),
+    GithubUserService,
+  ]}
+>
+  {/*...*/}
+</Provider>
+```
+
+With that solved, we can inject service instances anywhere in our component tree via `<Inject/>` component or via `withInjectables()` High order component.
+
+3.  Implementing SearchUser component
+
+This component will handle our search form. On submit it will call methods from `GithubUserService` instance.
+
+With that said, we need to inject `GithubUserService` to our component. We could use `<Inject>` within our render but for this case we wanna use `GithubUserService` outside `render` so HoC is a great candidate for this usecase. And of course it's gonna be "injected" via React component injection, which is nothing else than React props ✌️.
+
+```tsx
+type Props = {
+  userService: GithubUserService
+}
+
+export class SearchUser extends React.Component<Props> {
+  private usernameRef = createRef<HTMLInputElement>()
+  private submitBtnRef = createRef<HTMLButtonElement>()
+
+  render() {
+    return (
+      <form onSubmit={(ev) => this.handleSubmit(ev)}>
+        <input
+          type="text"
+          placeholder="github username..."
+          ref={this.usernameRef}
+        />
+        <button type="submit" ref={this.submitBtnRef}>
+          Search Github
+        </button>
+      </form>
+    )
+  }
+  private handleSubmit(ev: SyntheticEvent<HTMLFormElement>) {
+    ev.preventDefault()
+    const username = this.usernameRef.current!
+    const btn = this.submitBtnRef.current!
+
+    // disable form on submit
+    btn.disabled = true
+    username.disabled = true
+
+    // now we can fetch bio and repos of selected user by calling injected userService.getGithubInfo
+    this.props.userService
+      .getGithubInfo(username.value)
+      .then(({ bio, repos }) => {
+        btn.disabled = false
+        username.disabled = false
+        username.value = ''
+      })
+  }
+}
+
+// last step is to wire our SearchUser to DI container
+export default withInjectables({ userService: GithubUserService })(SearchUser)
+```
+
+Hmm but something is missing here right ? We wanna save our fetched data... somewhere ! we could indeed store it within parent component or even in this one, but because we're already using DI, we can make our `GithubUserService` stateful. Let's do that first!
+
+All we need to do to make injectable service stateful, is to extend it with `WithState` generic abstract class, which implements `setState` method ( the same like React.Component )
+
+```tsx
+// (1) we define State from implementation ( the same pattern as you're used to from React )
+type State = Readonly<typeof initialState>
+const initialState = {
+  username: '',
+  bio: null as GithubUser | null,
+  repos: null as GithubUserRepo[] | null,
+}
+
+// (2) now we extend our class WithState<State>
+@Injectable()
+export class GithubUserService extends WithState<State> {
+  // (3) we set service our state
+  readonly state: State = initialState
+
+  constructor(private http: HttpClient) {
+    super()
+  }
+
+  // (4) and we implement `setActiveUser` method which will update our internal service state
+  setActiveUser(user: Partial<State>) {
+    this.setState((prevState) => ({ ...prevState, ...user }))
+  }
+
+  getRepos(username: string) {
+    /*...*/
+  }
+
+  getUserInfo(username: string) {
+    /*...*/
+  }
+
+  getGithubInfo(username: string) {
+    /*...*/
+  }
+}
+```
+
+With our stateful `GithubUserService` we can update `SearchUser.handleSubmit` method:
+
+```tsx
+export class SearchUser extends React.Component<Props> {
+  private handleSubmit(ev: SyntheticEvent<HTMLFormElement>) {
+    ev.preventDefault()
+    const username = this.usernameRef.current!
+    const btn = this.submitBtnRef.current!
+
+    // disable form on submit
+    btn.disabled = true
+    username.disabled = true
+
+    // first we set just username to our service state
+    // this will trigger re-render on every component that injects userService
+    this.props.userService.setActiveUser({ username: username.value })
+
+    // now we can fetch bio and repos of selected user by calling injected userService.getGithubInfo
+    this.props.userService
+      .getGithubInfo(username.value)
+      .then(({ bio, repos }) => {
+        // we store resolved data (bio and repos) to our service state
+        this.props.userService.setActiveUser({ bio, repos })
+
+        // we enable our form again
+        btn.disabled = false
+        username.disabled = false
+        username.value = ''
+      })
+  }
+}
+```
+
+Now we need to implement the last part of our app. Rendering the User Profile Bio and Repos.
+
+4.  Implementing Profile component
+
+Our `GithubUserService` is stateful, so all we need to do is to inject it within our `Profile` component. This time we don't need to access `userService` outside `render` so using `<Inject>` is the perfect candidate for wiring up Profile with our DI tree.
+
+```tsx
+import { Inject } from '@martin_hotell/rea-di'
+import React, { Component } from 'react'
+
+import { GithubUserService } from '../user.service'
+import { Repos } from './repos'
+import { UserProfile } from './user-profile'
+
+export class Profile extends Component {
+  render() {
+    return (
+      // (1) we specify a key value map `{ userService: GithubUserService }` with which we're saying what property name is gonna be injected within render prop and mapped to particular Injectable
+      <Inject providers={{ userService: GithubUserService }}>
+        {({ userService }) => {
+          // (2) we got our userService, we just destructure its state
+          const { username, repos, bio } = userService.state
+
+          // (3) we render only when both bio and repos have been fetched and stored within our service instance
+          if (bio && repos) {
+            return (
+              <div className="row">
+                <div className="col sm-12 md-6">
+                  <UserProfile username={username} bio={bio} />
+                </div>
+                <div className="col sm-12 md-6">
+                  <Repos username={username} repos={repos} />
+                </div>
+              </div>
+            )
+          }
+
+          // if username only is set, that means we are in submitting phase
+          if (username) {
+            return `Loading... ${username}`
+          }
+        }}
+      </Inject>
+    )
+  }
+}
+```
+
+And that's it!
+
+For complete implementation/demo checkout [examples](./examples/github-user)
+
+---
 
 ### Handling state within services
 
@@ -297,14 +488,7 @@ You just provide mocks of your services for both unit and integration tests and 
 ```tsx
 import { Provide } from 'rea-di'
 
-const DATA: Users[] = [
-  {
-    /* ... */
-  },
-  {
-    /* ... */
-  },
-]
+const DATA: Users[] = [{ name: 'Martin' }, { name: 'John' }]
 
 class UserServiceMock extends UserService {
   getUsers = jest.fn(() => this.setState(() => ({ users: DATA })))
