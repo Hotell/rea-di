@@ -409,7 +409,7 @@ For complete implementation/demo checkout [examples](./examples/github-user)
 
 For developers with Angular background, storing state within Service is a must have. While that makes sense in Angular ( because handling state within Angular component is a mess ) in React this abstraction isn't needed that much as React component state is mostly sufficient for that purpose.
 
-With `react-di`, you can handle state on service layer although we encourage you to handle state internally in `Component.state` or via some store state management library ( like Redux ).
+With `rea-di`, you can handle state on service layer although we encourage you to handle state internally in `Component.state` or via some store state management library ( like Redux ).
 
 > For those familiar with `Unstated`, with `rea-di`, you got all unstated library power at your disposal within service layer and much more 🌻.
 
