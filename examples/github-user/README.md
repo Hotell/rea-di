@@ -1,6 +1,6 @@
-# Github User Profile app
+# Github User Search app
 
-Run the [Github User Profile](.) example:
+Run the [Github User Search](.) example:
 
 ```
 git clone https://github.com/hotell/rea-di.git
@@ -14,4 +14,4 @@ Or check out the [sandbox](https://codesanbox.io/).
 
 ## Injector tree
 
-![Injector tree](../img/counter-di.png)
+![Injector tree](../img/github-search-di.png)

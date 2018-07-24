@@ -56,6 +56,22 @@ This builds on previous **counter with logger** example and demonstrates multipl
 
 Try to do this without DI framework... Good luck with that 😇
 
+## Github User Search
+
+Run the [Github User Search](./github-user) example:
+
+```
+git clone https://github.com/hotell/rea-di.git
+
+cd rea-di/examples/github-user
+yarn install
+yarn start
+```
+
+Or check out the [sandbox](https://codesanbox.io/).
+
+This demonstrates simple implementation of DI and shows usage of both `<Inject>` and **Hoc** `withInjectables()` to wire up DI to React app component tree.
+
 ## Tour of Heroes
 
 Run the [Tour of Heroes](./tour-of-heroes) example:
