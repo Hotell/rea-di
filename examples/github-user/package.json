@@ -1,7 +1,7 @@
 {
   "name": "github-user-example",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "src/index.html",
   "author": "Martin Hochel <hochelmartin@gmail.com>",
   "license": "MIT",
   "scripts": {
