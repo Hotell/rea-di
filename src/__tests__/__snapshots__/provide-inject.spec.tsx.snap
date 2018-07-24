@@ -1,0 +1,74 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Provide/Inject should properly inject 1`] = `
+<App>
+  <main>
+    <Provider
+      provide={
+        Array [
+          [Function],
+          [Function],
+        ]
+      }
+    >
+      <CounterModule
+        title="count module"
+      >
+        <div>
+          <h3>
+            count module
+          </h3>
+          <Inject
+            providers={
+              Object {
+                "counterService": [Function],
+                "logger": [Function],
+              }
+            }
+          >
+            <Counter
+              counterService={
+                CounterService {
+                  "logger": Logger {},
+                  "setState": [Function],
+                  "state": Object {
+                    "count": 0,
+                  },
+                }
+              }
+              logger={Logger {}}
+            >
+              <div
+                className="counter"
+              >
+                <h4>
+                  Counter
+                </h4>
+                <p>
+                  Count: 
+                  0
+                </p>
+                <button
+                  onClick={[Function]}
+                >
+                  increment
+                </button>
+                <button
+                  onClick={[Function]}
+                >
+                  decrement
+                </button>
+                <section
+                  className="children-section"
+                >
+                  Hello projection
+                </section>
+              </div>
+            </Counter>
+          </Inject>
+        </div>
+      </CounterModule>
+    </Provider>
+  </main>
+</App>
+`;
