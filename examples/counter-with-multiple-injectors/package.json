@@ -8,7 +8,8 @@
     "start": "parcel --no-cache src/index.html"
   },
   "dependencies": {
-    "@martin_hotell/rea-di": "0.0.1",
+    "@abraham/reflection": "0.3.0",
+    "@martin_hotell/rea-di": "0.1.0",
     "core-js": "2.5.7",
     "injection-js": "2.2.1",
     "react": "16.4.1",
