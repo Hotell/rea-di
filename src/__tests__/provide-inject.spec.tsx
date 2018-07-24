@@ -1,12 +1,10 @@
 // tslint:disable:no-magic-numbers
-// tslint:disable:no-use-before-declare
-
-import { mount } from 'enzyme'
 import React, { Component } from 'react'
 
+import { mount } from 'enzyme'
 import { noop } from '../helpers'
-import { withInjectables } from '../with-injectables'
-import { withProvider } from '../with-provider'
+import { Inject } from '../inject'
+import { Provider } from '../provider'
 import { Counter } from './setup/components'
 import { CounterService, Logger } from './setup/services'
 
@@ -15,30 +13,35 @@ class CounterModule extends Component<{ title: string }> {
     return (
       <div>
         <h3>{this.props.title}</h3>
-        <CounterEnhanced>Hello projection</CounterEnhanced>
+        <Inject providers={{ logger: Logger, counterService: CounterService }}>
+          {(injectables) => {
+            return (
+              <Counter
+                counterService={injectables.counterService}
+                logger={injectables.logger}
+              >
+                Hello projection
+              </Counter>
+            )
+          }}
+        </Inject>
       </div>
     )
   }
 }
-const CounterModuleEnhanced = withProvider({
-  provide: [Logger, CounterService],
-})(CounterModule)
-
-const CounterEnhanced = withInjectables({
-  logger: Logger,
-  counterService: CounterService,
-})(Counter)
 
 const App = () => {
   return (
     <main>
-      <CounterModuleEnhanced title="count module" />
+      <Provider provide={[Logger, CounterService]}>
+        <CounterModule title="count module" />
+      </Provider>
     </main>
   )
 }
 
-describe('Hoc wrappers', () => {
-  it(`should work with HoC`, () => {
+describe(`Provide/Inject`, () => {
+  it(`should properly inject`, () => {
     const tree = mount(<App />)
 
     const counter = tree.find(Counter)
