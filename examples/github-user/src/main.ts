@@ -1,3 +1,5 @@
+import 'papercss/dist/paper.css'
+
 import { createElement } from 'react'
 import { render } from 'react-dom'
 

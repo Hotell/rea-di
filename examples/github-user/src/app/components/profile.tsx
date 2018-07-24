@@ -1,9 +1,9 @@
 import { Inject } from '@martin_hotell/rea-di'
 import React, { Component } from 'react'
 
+import { GithubUserService } from '../user.service'
 import { Repos } from './repos'
 import { UserProfile } from './user-profile'
-import { GithubUserService } from './user.service'
 
 export class Profile extends Component {
   render() {
@@ -15,13 +15,12 @@ export class Profile extends Component {
           if (bio && repos) {
             return (
               <div className="row">
-                <div className="col-md-4">
+                <div className="col sm-12 md-6">
                   <UserProfile username={username} bio={bio} />
                 </div>
-                <div className="col-md-4">
+                <div className="col sm-12 md-6">
                   <Repos username={username} repos={repos} />
                 </div>
-                <div className="col-md-4" />
               </div>
             )
           }
