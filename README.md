@@ -21,16 +21,14 @@ yarn add @martin_hotell/rea-di
 yarn add react injection-js tslib
 
 # install Reflect API polyfill
-yarn add core-js
+yarn add @abraham/reflection
 ```
 
 > **Note:**
 >
 > You need a polyfill for the [Reflect API](http://www.ecma-international.org/ecma-262/6.0/#sec-reflection).
-> You can use one of:
 >
-> - [reflect-metadata](https://www.npmjs.com/package/reflect-metadata)
-> - [core-js (`core-js/es7/reflect`)](https://www.npmjs.com/package/core-js)
+> We highly recommend tiny [reflection](https://www.npmjs.com/package/@abraham/reflection) polyfill ( 3kB only ! )
 >
 > Also for TypeScript you will need to enable `experimentalDecorators` and `emitDecoratorMetadata` flags within your `tsconfig.json`
 

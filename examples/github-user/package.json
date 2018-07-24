@@ -5,9 +5,11 @@
   "author": "Martin Hochel <hochelmartin@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "start": "parcel --no-cache src/index.html"
+    "start": "parcel --no-cache src/index.html",
+    "build": "parcel build src/index.html"
   },
   "dependencies": {
+    "@abraham/reflection": "0.3.0",
     "@martin_hotell/axios-http": "0.3.0",
     "@martin_hotell/rea-di": "0.1.0",
     "axios": "0.18.0",
