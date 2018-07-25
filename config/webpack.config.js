@@ -42,16 +42,7 @@ const DEFAULT_ENV = { dev: true }
 /**
  * @type {WebpackExternals | WebpackExternals[]}
  */
-// const EXTERNALS = ['react','react-dom', 'lodash']
-const EXTERNALS = {
-  // react: 'react'
-  // lodash: {
-  //   commonjs: 'lodash',
-  //   commonjs2: 'lodash',
-  //   amd: 'lodash',
-  //   root: '_',
-  // },
-}
+const EXTERNALS = ['react', 'react-dom', 'injection-js', 'tslib']
 
 /**
  * @type {{[key:string]: WebpackRule}}
