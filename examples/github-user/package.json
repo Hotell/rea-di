@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@abraham/reflection": "0.3.0",
-    "@martin_hotell/axios-http": "0.3.0",
+    "@martin_hotell/axios-http": "0.3.1",
     "@martin_hotell/rea-di": "0.1.0",
     "axios": "0.18.0",
     "core-js": "2.5.7",
