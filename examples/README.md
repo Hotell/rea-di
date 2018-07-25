@@ -16,7 +16,7 @@ yarn install
 yarn start
 ```
 
-Or check out the [sandbox](https://codesanbox.io/).
+Or check out the [sandbox](https://codesandbox.io/s/github/Hotell/rea-di/tree/master/examples/counter).
 
 This is the most basic example of using Rea-di for handling state on Service layer with React.
 
@@ -34,7 +34,7 @@ yarn install
 yarn start
 ```
 
-Or check out the [sandbox](https://codesanbox.io/).
+Or check out the [sandbox](https://codesandbox.io/s/github/Hotell/rea-di/tree/master/examples/counter-with-logger).
 
 This builds on previous counter example and adds `Logger` service which is injected to `CounterService`. With that we get logs into console on every action.
 
@@ -50,7 +50,7 @@ yarn install
 yarn start
 ```
 
-Or check out the [sandbox](https://codesanbox.io/).
+Or check out the [sandbox](https://codesandbox.io/s/github/Hotell/rea-di/tree/master/examples/counter-with-multiple-injectors).
 
 This builds on previous **counter with logger** example and demonstrates multiple child injectors resolution and aliasing by using one common `Counter` component with different service instances injected by the same token resolved via tree hierarchy. Also it adds configurable `MultiplyCounterService`.
 
@@ -68,7 +68,7 @@ yarn install
 yarn start
 ```
 
-Or check out the [sandbox](https://codesanbox.io/).
+Or check out the [sandbox](https://codesandbox.io/s/github/Hotell/rea-di/tree/master/examples/github-user).
 
 This demonstrates simple implementation of DI and shows usage of both `<Inject>` and **Hoc** `withInjectables()` to wire up DI to React app component tree.
 

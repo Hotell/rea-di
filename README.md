@@ -36,6 +36,8 @@ yarn add @abraham/reflection
 
 Let's demonstrate simple usage with old good Counter example:
 
+[![Edit counter-example](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/github/Hotell/rea-di/tree/master/examples/counter)
+
 ```tsx
 import React from 'react'
 import { render } from 'react-dom'

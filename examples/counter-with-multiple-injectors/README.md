@@ -10,7 +10,7 @@ yarn install
 yarn start
 ```
 
-Or check out the [sandbox](https://codesanbox.io/).
+Or check out the [sandbox](https://codesandbox.io/s/github/Hotell/rea-di/tree/master/examples/counter-with-multiple-injectors).
 
 ## Injector tree
 
