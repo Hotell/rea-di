@@ -14,7 +14,7 @@
   "author": "Martin Hochel",
   "license": "MIT",
   "engines": {
-    "node": ">=8"
+    "node": ">=8.5"
   },
   "scripts": {
     "cleanup": "shx rm -rf dist",
