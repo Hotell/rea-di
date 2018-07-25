@@ -1,7 +1,7 @@
 // tslint:disable:jsx-no-lambda
 // tslint:disable:no-shadowed-variable
 import { Inject } from '@martin_hotell/rea-di'
-import React, { Component } from 'react'
+import { Component, createElement } from 'react'
 
 import { CounterService } from './counter.service'
 

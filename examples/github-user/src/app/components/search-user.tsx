@@ -1,12 +1,12 @@
 // tslint:disable:jsx-no-lambda
 import { withInjectables } from '@martin_hotell/rea-di'
-import React, { createRef, SyntheticEvent } from 'react'
+import { Component, createElement, createRef } from 'react'
 import { GithubUserService } from '../user.service'
 
 type Props = {
   userService: GithubUserService
 }
-export class SearchUser extends React.Component<Props> {
+export class SearchUser extends Component<Props> {
   private usernameRef = createRef<HTMLInputElement>()
   private submitBtnRef = createRef<HTMLButtonElement>()
 
@@ -35,7 +35,7 @@ export class SearchUser extends React.Component<Props> {
       </div>
     )
   }
-  private handleSubmit(ev: SyntheticEvent<HTMLFormElement>) {
+  private handleSubmit(ev: import('react').SyntheticEvent<HTMLFormElement>) {
     ev.preventDefault()
     const username = this.usernameRef.current!
     const btn = this.submitBtnRef.current!

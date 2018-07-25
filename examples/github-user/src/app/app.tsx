@@ -1,6 +1,6 @@
 import { registerHttpClientProviders } from '@martin_hotell/axios-http'
 import { Provider } from '@martin_hotell/rea-di'
-import React, { Component } from 'react'
+import { Component, createElement } from 'react'
 
 import { Profile } from './components/profile'
 import SearchUser from './components/search-user'

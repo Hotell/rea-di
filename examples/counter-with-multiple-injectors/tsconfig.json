@@ -9,6 +9,7 @@
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
     "jsx": "react",
+    "jsxFactory": "createElement",
     "strict": true,
     "importHelpers": true,
     "experimentalDecorators": true,

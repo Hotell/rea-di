@@ -1,4 +1,5 @@
-import React, { Component } from 'react'
+// tslint:disable:jsx-no-lambda
+import { Component, createElement, Fragment } from 'react'
 
 import { CounterService } from './counter.service'
 
@@ -10,7 +11,7 @@ export class Counter extends Component<Props> {
     const { counterService } = this.props
 
     return (
-      <>
+      <Fragment>
         <p>
           Open you browser devtools console... and start clicking on buttons ;)
         </p>
@@ -25,7 +26,7 @@ export class Counter extends Component<Props> {
             Increment async
           </button>
         </p>
-      </>
+      </Fragment>
     )
   }
 }

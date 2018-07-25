@@ -1,19 +1,19 @@
 import { Provider } from '@martin_hotell/rea-di'
-import React, { Component } from 'react'
+import { Component, createElement } from 'react'
 
-import { CounterService } from './counter.service'
 import { Counter } from './counter'
+import { CounterService } from './counter.service'
+import { EnhancedLogger } from './enhanced-logger.service'
 import { Logger } from './logger.service'
 import {
-  MultiplyCounterService,
   MultiplyCounterConfig,
+  MultiplyCounterService,
 } from './multiply-counter.service'
-import { EnhancedLogger } from './enhanced-logger.service'
 
 export class App extends Component {
   render() {
     return (
-      <div className="app">
+      <div className="app container">
         <h1>Counter app</h1>
         <p>
           Open you browser devtools console... and start clicking on buttons ;)
@@ -30,10 +30,12 @@ export class App extends Component {
               { provide: Logger, useClass: EnhancedLogger },
             ]}
           >
-            <h2>
-              Counter component with MultiplyCounterService instance
-              <small>multiply by 2 and uses enhanced logger</small>
-            </h2>
+            <header>
+              <h2>Counter component with MultiplyCounterService instance</h2>
+              <h4 className="text-secondary">
+                multiply by 2 and uses enhanced logger
+              </h4>
+            </header>
             <Counter />
           </Provider>
 
@@ -45,10 +47,10 @@ export class App extends Component {
               { provide: CounterService, useClass: MultiplyCounterService },
             ]}
           >
-            <h2>
-              Counter component with MultiplyCounterService instance
-              <small>multiply by 4</small>
-            </h2>
+            <header>
+              <h2>Counter component with MultiplyCounterService instance</h2>
+              <h4 className="text-secondary">multiply by 4</h4>
+            </header>
             <Counter />
           </Provider>
         </Provider>

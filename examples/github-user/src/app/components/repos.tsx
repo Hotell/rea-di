@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import { Component, createElement } from 'react'
 import { GithubUserRepo } from '../repo.model'
 
 type Props = { repos: GithubUserRepo[]; username: string }

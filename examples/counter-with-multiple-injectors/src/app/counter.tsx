@@ -1,5 +1,7 @@
-import React, { Component } from 'react'
+// tslint:disable:jsx-no-lambda
+
 import { Inject } from '@martin_hotell/rea-di'
+import { Component, createElement, Fragment } from 'react'
 
 import { CounterService } from './counter.service'
 
@@ -9,7 +11,7 @@ export class Counter extends Component<Props> {
     return (
       <Inject providers={{ counterService: CounterService }}>
         {({ counterService }) => (
-          <>
+          <Fragment>
             <p>
               Clicked: {counterService.value} times{' '}
               <button onClick={() => counterService.onIncrement()}>+</button>{' '}
@@ -21,7 +23,7 @@ export class Counter extends Component<Props> {
                 Increment async
               </button>
             </p>
-          </>
+          </Fragment>
         )}
       </Inject>
     )

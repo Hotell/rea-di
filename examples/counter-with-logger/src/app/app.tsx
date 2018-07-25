@@ -1,8 +1,8 @@
-import { Provider, Inject } from '@martin_hotell/rea-di'
-import React, { Component } from 'react'
+import { Inject, Provider } from '@martin_hotell/rea-di'
+import { Component, createElement } from 'react'
 
-import { CounterService } from './counter.service'
 import { Counter } from './counter'
+import { CounterService } from './counter.service'
 import { Logger } from './logger.service'
 
 export class App extends Component {

@@ -1,5 +1,5 @@
 import { Provider } from '@martin_hotell/rea-di'
-import React, { Component } from 'react'
+import { Component, createElement } from 'react'
 
 import { Counter } from './counter'
 import { CounterService } from './counter.service'

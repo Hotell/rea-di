@@ -1,5 +1,5 @@
 import { Inject } from '@martin_hotell/rea-di'
-import React, { Component } from 'react'
+import { Component, createElement } from 'react'
 
 import { GithubUserService } from '../user.service'
 import { Repos } from './repos'
