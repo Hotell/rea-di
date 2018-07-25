@@ -10,6 +10,7 @@
     "esModuleInterop": true,
     "jsx": "react",
     "jsxFactory": "createElement",
+    "outDir": "dist",
     "strict": true,
     "importHelpers": true,
     "experimentalDecorators": true,
