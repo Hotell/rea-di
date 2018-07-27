@@ -4,6 +4,7 @@
 import { mount } from 'enzyme'
 import React, { Component } from 'react'
 
+import { ReflectiveInjector } from 'injection-js'
 import { noop } from '../helpers'
 import { withInjectables } from '../with-injectables'
 import { withProvider } from '../with-provider'
@@ -78,5 +79,34 @@ describe('Hoc wrappers', () => {
     expect(counterLogger.log).toHaveBeenCalledTimes(3)
 
     tree.unmount()
+  })
+
+  it(`should should return wrapped component with proper prop annotation`, () => {
+    const injector = ReflectiveInjector.resolveAndCreate([
+      Logger,
+      CounterService,
+    ])
+    const logger: Logger = injector.get(Logger)
+    const counter: CounterService = injector.get(CounterService)
+
+    expect(CounterModuleEnhanced.WrappedComponent).toBe(CounterModule)
+    expect(CounterEnhanced.WrappedComponent).toBe(Counter)
+
+    expect(
+      <CounterModuleEnhanced.WrappedComponent title="Hello" />
+    ).toMatchSnapshot()
+    expect(
+      <CounterEnhanced.WrappedComponent
+        counterService={counter}
+        logger={logger}
+      />
+    ).toMatchSnapshot()
+  })
+
+  it(`should should create proper displayName`, () => {
+    expect(CounterModuleEnhanced.displayName).toBe(
+      'WithProvider(CounterModule)'
+    )
+    expect(CounterEnhanced.displayName).toBe('WithInjectables(Counter)')
   })
 })

@@ -2,7 +2,7 @@ import React, { Component, ComponentType } from 'react'
 
 import { getComponentDisplayName } from './helpers'
 import { Inject } from './inject'
-import { ProvidersMap, WrapperProps } from './types'
+import { HoCComponentClass, ProvidersMap, WrapperProps } from './types'
 
 /**
  * If you need to access injected service instances outside of render, you can use this high order component.
@@ -13,7 +13,7 @@ import { ProvidersMap, WrapperProps } from './types'
 export const withInjectables = <T extends ProvidersMap>(providers: T) => {
   return <OriginalProps extends {}>(
     Cmp: ComponentType<OriginalProps>
-  ): ComponentType<WrapperProps<OriginalProps, T>> => {
+  ): HoCComponentClass<WrapperProps<OriginalProps, T>, typeof Cmp> => {
     class WithInjectables extends Component<WrapperProps<OriginalProps, T>> {
       static displayName = `WithInjectables(${getComponentDisplayName(Cmp)})`
       static readonly WrappedComponent = Cmp

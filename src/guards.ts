@@ -1,7 +1,7 @@
 import { Provider, Type, TypeProvider } from 'injection-js'
 
 export const isJsLikeObject = <T extends object>(value: any): value is T =>
-  typeof value === 'object'
+  value !== null && typeof value === 'object'
 export const isBlank = <T>(
   value: any
 ): value is T extends undefined | null ? T : never => value == null
