@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.2.0"></a>
+
+# [0.2.0](https://www.github.com/Hotell/rea-di/compare/v0.1.0...v0.2.0) (2018-07-27)
+
+### Bug Fixes
+
+- **build:** don't bundle peer deps wihin bundle ([790885e](https://www.github.com/Hotell/rea-di/commit/790885e))
+
+### Features
+
+- **hoc:** properly expose WrappedComponent type (#7) ([883074c](https://www.github.com/Hotell/rea-di/commit/883074c))
+
 <a name="0.1.0"></a>
 
 # [0.1.0](https://www.github.com/Hotell/rea-di/compare/v0.0.1...v0.1.0) (2018-07-23)
