@@ -1,9 +1,9 @@
 import { Provider as ProviderConfig } from 'injection-js'
 import React, { Component, ComponentType } from 'react'
 
-import { getComponentDisplayName } from './helpers'
+import { createHOCName } from './helpers'
 import { Provider } from './provider'
-import { WrapperProps } from './types'
+import { HoCComponentClass, WrapperProps } from './types'
 
 type ProvidersSetup = { provide: ProviderConfig[] }
 
@@ -15,9 +15,9 @@ type ProvidersSetup = { provide: ProviderConfig[] }
 export const withProvider = <T extends ProvidersSetup>(provideConfig: T) => {
   return <OriginalProps extends {}>(
     Cmp: ComponentType<OriginalProps>
-  ): ComponentType<WrapperProps<OriginalProps, T>> => {
+  ): HoCComponentClass<WrapperProps<OriginalProps, T>, typeof Cmp> => {
     class WithProvider extends Component<WrapperProps<OriginalProps, T>> {
-      static displayName = `WithProvider(${getComponentDisplayName(Cmp)}`
+      static displayName: string = createHOCName(WithProvider, Cmp)
 
       static readonly WrappedComponent = Cmp
 

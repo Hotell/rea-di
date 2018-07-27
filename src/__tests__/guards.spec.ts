@@ -27,8 +27,8 @@ describe(`guards`, () => {
       expect(isJsLikeObject(undefined)).toBe(false)
       expect(isJsLikeObject(true)).toBe(false)
       expect(isJsLikeObject(noop)).toBe(false)
+      expect(isJsLikeObject(null)).toBe(false)
 
-      expect(isJsLikeObject(null)).toBe(true)
       expect(isJsLikeObject(emptyArr)).toBe(true)
       expect(isJsLikeObject(emptyObj)).toBe(true)
     })

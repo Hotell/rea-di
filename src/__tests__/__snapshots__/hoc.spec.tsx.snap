@@ -1,9 +1,29 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`Hoc wrappers should should return wrapped component with proper prop annotation 1`] = `
+<CounterModule
+  title="Hello"
+/>
+`;
+
+exports[`Hoc wrappers should should return wrapped component with proper prop annotation 2`] = `
+<Counter
+  counterService={
+    CounterService {
+      "logger": Logger {},
+      "state": Object {
+        "count": 0,
+      },
+    }
+  }
+  logger={Logger {}}
+/>
+`;
+
 exports[`Hoc wrappers should work with HoC 1`] = `
 <App>
   <main>
-    <WithProvider(CounterModule
+    <WithProvider(CounterModule)
       title="count module"
     >
       <Provider
@@ -137,7 +157,7 @@ exports[`Hoc wrappers should work with HoC 1`] = `
           </div>
         </CounterModule>
       </Provider>
-    </WithProvider(CounterModule>
+    </WithProvider(CounterModule)>
   </main>
 </App>
 `;
