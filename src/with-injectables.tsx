@@ -1,6 +1,6 @@
 import React, { Component, ComponentType } from 'react'
 
-import { getComponentDisplayName } from './helpers'
+import { createHOCName } from './helpers'
 import { Inject } from './inject'
 import { HoCComponentClass, ProvidersMap, WrapperProps } from './types'
 
@@ -15,7 +15,7 @@ export const withInjectables = <T extends ProvidersMap>(providers: T) => {
     Cmp: ComponentType<OriginalProps>
   ): HoCComponentClass<WrapperProps<OriginalProps, T>, typeof Cmp> => {
     class WithInjectables extends Component<WrapperProps<OriginalProps, T>> {
-      static displayName = `WithInjectables(${getComponentDisplayName(Cmp)})`
+      static displayName: string = createHOCName(WithInjectables, Cmp)
       static readonly WrappedComponent = Cmp
       render() {
         const { ...rest } = this.props as object
