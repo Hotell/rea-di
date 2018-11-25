@@ -4,7 +4,7 @@
 import React, { Component } from 'react'
 
 import { mount } from 'enzyme'
-import { noop } from '../helpers'
+import { noop, tuple } from '../helpers'
 import { Inject } from '../inject'
 import { Provider } from '../provider'
 import { Counter } from './setup/components'
@@ -16,13 +16,10 @@ class CounterModule extends Component<{ title: string }> {
     return (
       <div>
         <h3>{this.props.title}</h3>
-        <Inject providers={{ logger: Logger, counterService: CounterService }}>
-          {(injectables) => {
+        <Inject providers={tuple(Logger, CounterService)}>
+          {([logger, counterService]) => {
             return (
-              <Counter
-                counterService={injectables.counterService}
-                logger={injectables.logger}
-              >
+              <Counter counterService={counterService} logger={logger}>
                 Hello projection
               </Counter>
             )
@@ -98,15 +95,15 @@ describe(`Provide/Inject`, () => {
       return (
         <Provider provide={[{ provide: Logger, useClass: LoggerMock }]}>
           <div data-test="parentInjector">
-            <Inject providers={{ logger: Logger }}>
-              {(fromParent) => {
-                parentLoggerInstance = fromParent.logger as LoggerMock
+            <Inject providers={[Logger]}>
+              {([fromParentLogger]) => {
+                parentLoggerInstance = fromParentLogger as LoggerMock
 
                 return (
                   <div>
                     <button
                       onClick={() => {
-                        fromParent.logger.log('from parent')
+                        fromParentLogger.log('from parent')
                       }}
                     >
                       log from parent
@@ -115,22 +112,22 @@ describe(`Provide/Inject`, () => {
                       provide={[{ provide: Logger, useClass: LoggerMock }]}
                     >
                       <div data-test="childInjector">
-                        <Inject providers={{ logger: Logger }}>
-                          {(fromChild) => {
-                            childLoggerInstance = fromChild.logger as LoggerMock
+                        <Inject providers={[Logger]}>
+                          {([fromChildLogger]) => {
+                            childLoggerInstance = fromChildLogger as LoggerMock
 
                             return (
                               <div>
                                 <button
                                   onClick={() => {
-                                    fromParent.logger.log('parent from child')
+                                    fromParentLogger.log('parent from child')
                                   }}
                                 >
                                   log parent from child
                                 </button>
                                 <button
                                   onClick={() => {
-                                    fromChild.logger.log('from child')
+                                    fromChildLogger.log('from child')
                                   }}
                                 >
                                   log from child

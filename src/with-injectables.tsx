@@ -2,7 +2,16 @@ import React, { Component, ComponentType } from 'react'
 
 import { createHOCName } from './helpers'
 import { Inject } from './inject'
-import { HoCComponentClass, ProvidersMap, WrapperProps } from './types'
+import {
+  Constructor,
+  HoCComponentClass,
+  InstanceTypes,
+  Subtract,
+} from './types'
+
+type InjectedProps<T extends Constructor[] = Constructor[]> = {
+  injectables: InstanceTypes<T>
+}
 
 /**
  * If you need to access injected service instances outside of render, you can use this high order component.
@@ -10,11 +19,16 @@ import { HoCComponentClass, ProvidersMap, WrapperProps } from './types'
  * This can be mitigated by extracting providers to instance property when standard <Inject provide={{...}}/> is used.
  * @param providers
  */
-export const withInjectables = <T extends ProvidersMap>(providers: T) => {
-  return <OriginalProps extends {}>(
+export const withInjectables = <T extends Constructor[]>(providers: T) => {
+  return <OriginalProps extends InjectedProps<T>>(
     Cmp: ComponentType<OriginalProps>
-  ): HoCComponentClass<WrapperProps<OriginalProps, T>, typeof Cmp> => {
-    class WithInjectables extends Component<WrapperProps<OriginalProps, T>> {
+  ): HoCComponentClass<
+    Subtract<OriginalProps, InjectedProps<T>>,
+    typeof Cmp
+  > => {
+    class WithInjectables extends Component<
+      Subtract<OriginalProps, InjectedProps<T>>
+    > {
       static displayName: string = createHOCName(WithInjectables, Cmp)
       static readonly WrappedComponent = Cmp
       render() {
@@ -22,7 +36,7 @@ export const withInjectables = <T extends ProvidersMap>(providers: T) => {
 
         return (
           <Inject providers={providers}>
-            {(injectables) => <Cmp {...injectables} {...rest} />}
+            {(injectables) => <Cmp injectables={injectables} {...rest} />}
           </Inject>
         )
       }

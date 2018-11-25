@@ -5,10 +5,10 @@ import { mount } from 'enzyme'
 import React, { Component } from 'react'
 
 import { ReflectiveInjector } from 'injection-js'
-import { noop } from '../helpers'
+import { noop, tuple } from '../helpers'
 import { withInjectables } from '../with-injectables'
 import { withProvider } from '../with-provider'
-import { Counter } from './setup/components'
+import { CounterForHoc } from './setup/components'
 import { CounterService, Logger } from './setup/services'
 
 class CounterModule extends Component<{ title: string }> {
@@ -21,14 +21,13 @@ class CounterModule extends Component<{ title: string }> {
     )
   }
 }
-const CounterModuleEnhanced = withProvider({
-  provide: [Logger, CounterService],
-})(CounterModule)
+const CounterModuleEnhanced = withProvider(tuple(Logger, CounterService))(
+  CounterModule
+)
 
-const CounterEnhanced = withInjectables({
-  logger: Logger,
-  counterService: CounterService,
-})(Counter)
+const CounterEnhanced = withInjectables(tuple(Logger, CounterService))(
+  CounterForHoc
+)
 
 const App = () => {
   return (
@@ -42,7 +41,7 @@ describe('Hoc wrappers', () => {
   it(`should work with HoC`, () => {
     const tree = mount(<App />)
 
-    const counter = tree.find(Counter)
+    const counter = tree.find(CounterForHoc)
     const counterChildren = counter.prop('children')
 
     expect(counterChildren!.toString()).toBe('Hello projection')
@@ -56,8 +55,8 @@ describe('Hoc wrappers', () => {
   it(`should properly update state on stateful service and reflect it on component tree`, () => {
     const tree = mount(<App />)
 
-    const counter = tree.find(Counter)
-    const counterLogger = counter.props().logger
+    const counter = tree.find(CounterForHoc)
+    const [counterLogger] = counter.props().injectables
     const incButton = counter.find('button').at(0)
     const decButton = counter.find('button').at(1)
     const countParagraph = counter.find('p')
@@ -90,16 +89,13 @@ describe('Hoc wrappers', () => {
     const counter: CounterService = injector.get(CounterService)
 
     expect(CounterModuleEnhanced.WrappedComponent).toBe(CounterModule)
-    expect(CounterEnhanced.WrappedComponent).toBe(Counter)
+    expect(CounterEnhanced.WrappedComponent).toBe(CounterForHoc)
 
     expect(
       <CounterModuleEnhanced.WrappedComponent title="Hello" />
     ).toMatchSnapshot()
     expect(
-      <CounterEnhanced.WrappedComponent
-        counterService={counter}
-        logger={logger}
-      />
+      <CounterEnhanced.WrappedComponent injectables={[logger, counter]} />
     ).toMatchSnapshot()
   })
 

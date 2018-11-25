@@ -9,7 +9,6 @@
     ],
     "strict": true,
     "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
     "suppressImplicitAnyIndexErrors": true,
     "forceConsistentCasingInFileNames": true,
     "jsx": "react",
@@ -21,7 +20,6 @@
     "declarationDir": "dist/types",
     "declarationMap": true,
     "stripInternal": true,
-    "resolveJsonModule": true,
     "importHelpers": true,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true

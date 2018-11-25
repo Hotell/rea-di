@@ -1,30 +1,32 @@
 import { Provider, Type, TypeProvider } from 'injection-js'
 
-export const isJsLikeObject = <T extends object>(value: any): value is T =>
-  value !== null && typeof value === 'object'
-export const isBlank = <T>(
-  value: any
-): value is T extends undefined | null ? T : never => value == null
+import { Nullable } from './types'
 
-export const isPresent = <T>(
-  value: any
-): value is T extends undefined | null ? never : T => value != null
+export const isBlank = <T>(value: T): value is Nullable<T> => value == null
 
-export const isArray = <T>(value: any): value is Array<any> =>
-  Array.isArray(value)
+export const isPresent = <T>(value: T): value is NonNullable<T> => value != null
 
 // tslint:disable-next-line:ban-types
-export const isFunction = <T extends Function>(value: any): value is T =>
+export const isFunction = (value: any): value is Function =>
   typeof value === 'function'
 
-export const isString = <T>(value: T): value is T extends string ? T : never =>
+export const isString = (value: any): value is string =>
   typeof value === 'string'
 
+export const isJsLikeObject = <T extends object>(value: any): value is T =>
+  isPresent(value) && typeof value === 'object'
+
+export const isArray = <T>(value: any): value is Array<T> =>
+  Array.isArray(value)
+
 export const isObject = <T>(value: T): value is T extends object ? T : never =>
-  isPresent(value) && isJsLikeObject(value) && !isArray(value)
+  isJsLikeObject(value) && !isArray(value)
 
+// =======================
 // library specific guards
+// =======================
 
+// @TODO create PR to expose this API - injection-js
 export const isType = <T extends {}>(value: any): value is Type<T> =>
   isFunction(value)
 

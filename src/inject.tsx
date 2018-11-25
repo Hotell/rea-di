@@ -2,29 +2,18 @@ import { ReflectiveInjector } from 'injection-js'
 import React, { Component, ReactNode } from 'react'
 
 import { Context, ContextApi } from './context'
-import { ProvidersMap } from './types'
+import { Constructor, InstanceTypes } from './types'
 
-type InjectProps<T extends ProvidersMap> = {
-  providers: T
-  children: (resolvedInjectables: ResolvedInjectables<T>) => ReactNode
+type InjectProps<C extends Constructor[]> = {
+  providers: C
+  children: (resolvedInjectables: InstanceTypes<C>) => ReactNode
 }
-type ResolvedInjectables<T extends ProvidersMap> = {
-  [P in keyof T]: T[P]['prototype']
-} & {
-  injector: ReflectiveInjector
-}
-export class Inject<T extends ProvidersMap> extends Component<InjectProps<T>> {
+
+export class Inject<T extends Constructor[]> extends Component<InjectProps<T>> {
   private injectMappedProviders = ({ injector }: ContextApi) => {
-    const keysMapNames = Object.keys(this.props.providers)
-    const injectables = keysMapNames.reduce(
-      (acc, nextKey) => {
-        const injectableRef = this.props.providers[nextKey]
-        const injectable = { [nextKey]: injector.get(injectableRef) }
-
-        return { ...acc, ...injectable }
-      },
-      { injector }
-    ) as ResolvedInjectables<T>
+    const injectables = this.props.providers.map((nextInjectableRef) =>
+      injector.get(nextInjectableRef)
+    ) as InstanceTypes<T>
 
     return this.props.children(injectables)
   }
