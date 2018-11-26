@@ -12,7 +12,6 @@
     "suppressImplicitAnyIndexErrors": true,
     "forceConsistentCasingInFileNames": true,
     "jsx": "react",
-    "jsxFactory": "React.createElement",
     "sourceMap": true,
     "outDir": "dist/esm5",
     "declaration": true,
