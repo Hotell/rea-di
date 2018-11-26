@@ -4,6 +4,7 @@
 import React, { Component } from 'react'
 
 import { mount } from 'enzyme'
+import { Injectable, Optional } from 'injection-js'
 import { noop, tuple } from '../helpers'
 import { Inject } from '../inject'
 import { Provider } from '../provider'
@@ -174,5 +175,60 @@ describe(`Provide/Inject`, () => {
     expect(parentLoggerInstance.log).toHaveBeenCalledTimes(2)
     expect(childLoggerInstance.log).toHaveBeenCalledTimes(1)
     expect(childLoggerInstance.log).toHaveBeenLastCalledWith('from child')
+  })
+
+  it(`should properly resolve @Optional injection`, () => {
+    @Injectable()
+    class Engine {}
+
+    @Injectable()
+    class Car {
+      engine: Engine | null
+      constructor(@Optional() engine: Engine) {
+        this.engine = engine ? engine : null
+      }
+    }
+
+    @Injectable()
+    class CarWillCrashWithoutEngine {
+      constructor(public engine: Engine) {}
+    }
+
+    const InjectConsumer = (props: { car: Car }) => {
+      return <div>{JSON.stringify(props.car)}</div>
+    }
+
+    const App = () => {
+      return (
+        <Provider provide={[Car]}>
+          <Inject providers={[Car]}>
+            {([car]) => {
+              return <InjectConsumer car={car} />
+            }}
+          </Inject>
+        </Provider>
+      )
+    }
+
+    const tree = mount(<App />)
+
+    expect(tree.text()).toEqual(`{"engine":null}`)
+    expect(tree.find(InjectConsumer).prop('car').engine).toBe(null)
+
+    function willThrow() {
+      const App = () => (
+        <Provider provide={[CarWillCrashWithoutEngine]}>
+          <Inject providers={[CarWillCrashWithoutEngine]}>
+            {(_) => JSON.stringify(_)}
+          </Inject>
+        </Provider>
+      )
+
+      mount(<App />)
+    }
+
+    expect(willThrow).toThrow(
+      'No provider for Engine! (CarWillCrashWithoutEngine -> Engine)'
+    )
   })
 })
