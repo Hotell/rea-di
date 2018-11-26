@@ -7,16 +7,18 @@ exports[`Hoc wrappers should should return wrapped component with proper prop an
 `;
 
 exports[`Hoc wrappers should should return wrapped component with proper prop annotation 2`] = `
-<Counter
-  counterService={
-    CounterService {
-      "logger": Logger {},
-      "state": Object {
-        "count": 0,
+<CounterForHoc
+  injectables={
+    Array [
+      Logger {},
+      CounterService {
+        "logger": Logger {},
+        "state": Object {
+          "count": 0,
+        },
       },
-    }
+    ]
   }
-  logger={Logger {}}
 />
 `;
 
@@ -41,89 +43,28 @@ exports[`Hoc wrappers should work with HoC 1`] = `
             <h3>
               count module
             </h3>
-            <WithInjectables(Counter)>
+            <WithInjectables(CounterForHoc)>
               <Inject
                 providers={
-                  Object {
-                    "counterService": [Function],
-                    "logger": [Function],
-                  }
+                  Array [
+                    [Function],
+                    [Function],
+                  ]
                 }
               >
-                <Counter
-                  counterService={
-                    CounterService {
-                      "logger": Logger {},
-                      "setState": [Function],
-                      "state": Object {
-                        "count": 0,
+                <CounterForHoc
+                  injectables={
+                    Array [
+                      Logger {},
+                      CounterService {
+                        "logger": Logger {},
+                        "setState": [Function],
+                        "state": Object {
+                          "count": 0,
+                        },
                       },
-                    }
+                    ]
                   }
-                  injector={
-                    ReflectiveInjector_ {
-                      "_constructionCounter": 2,
-                      "_parent": ReflectiveInjector_ {
-                        "_constructionCounter": 0,
-                        "_parent": null,
-                        "_providers": Array [],
-                        "keyIds": Array [],
-                        "objs": Array [],
-                      },
-                      "_providers": Array [
-                        ResolvedReflectiveProvider_ {
-                          "key": ReflectiveKey {
-                            "id": 1,
-                            "token": [Function],
-                          },
-                          "multiProvider": false,
-                          "resolvedFactories": Array [
-                            ResolvedReflectiveFactory {
-                              "dependencies": Array [],
-                              "factory": [Function],
-                            },
-                          ],
-                        },
-                        ResolvedReflectiveProvider_ {
-                          "key": ReflectiveKey {
-                            "id": 2,
-                            "token": [Function],
-                          },
-                          "multiProvider": false,
-                          "resolvedFactories": Array [
-                            ResolvedReflectiveFactory {
-                              "dependencies": Array [
-                                ReflectiveDependency {
-                                  "key": ReflectiveKey {
-                                    "id": 1,
-                                    "token": [Function],
-                                  },
-                                  "optional": false,
-                                  "visibility": null,
-                                },
-                              ],
-                              "factory": [Function],
-                            },
-                          ],
-                        },
-                      ],
-                      "keyIds": Array [
-                        1,
-                        2,
-                      ],
-                      "objs": Array [
-                        Logger {},
-                        CounterService {
-                          "logger": Logger {},
-                          "setState": [Function],
-                          "state": Object {
-                            "count": 0,
-                          },
-                        },
-                      ],
-                    }
-                  }
-                  logger={Logger {}}
                 >
                   <div
                     className="counter"
@@ -151,9 +92,9 @@ exports[`Hoc wrappers should work with HoC 1`] = `
                       Hello projection
                     </section>
                   </div>
-                </Counter>
+                </CounterForHoc>
               </Inject>
-            </WithInjectables(Counter)>
+            </WithInjectables(CounterForHoc)>
           </div>
         </CounterModule>
       </Provider>

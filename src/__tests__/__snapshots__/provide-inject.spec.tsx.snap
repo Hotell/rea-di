@@ -20,10 +20,10 @@ exports[`Provide/Inject should properly inject 1`] = `
           </h3>
           <Inject
             providers={
-              Object {
-                "counterService": [Function],
-                "logger": [Function],
-              }
+              Array [
+                [Function],
+                [Function],
+              ]
             }
           >
             <Counter

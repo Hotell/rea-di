@@ -1,12 +1,16 @@
 {
+  "extends": "../tsconfig.json",
   "compilerOptions": {
-    "strict": true,
-    "allowJs": true,
     "target": "es2017",
     "module": "commonjs",
-    "moduleResolution": "node",
-    "resolveJsonModule":true,
+    "allowJs": true,
+    "checkJs": true,
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
     "noEmit": true,
-    "skipLibCheck": true
-  }
+    "importHelpers": false
+  },
+  "include": [
+    "."
+  ]
 }

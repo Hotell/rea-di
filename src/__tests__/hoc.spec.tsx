@@ -103,6 +103,6 @@ describe('Hoc wrappers', () => {
     expect(CounterModuleEnhanced.displayName).toBe(
       'WithProvider(CounterModule)'
     )
-    expect(CounterEnhanced.displayName).toBe('WithInjectables(Counter)')
+    expect(CounterEnhanced.displayName).toBe('WithInjectables(CounterForHoc)')
   })
 })
