@@ -1,6 +1,6 @@
 export { Inject } from './inject'
-export { Provider } from './provider'
-export { WithState } from './with-state'
+export { DependencyProvider } from './provider'
+export { Stateful } from './stateful'
 export { AsyncPipe } from './async-pipe'
 export { withInjectables } from './with-injectables'
 export { withProvider } from './with-provider'

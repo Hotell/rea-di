@@ -18,7 +18,7 @@ const Debug = (props: {
   const { children, label, registeredProviders, parentInjector } = props
 
   // tslint:disable-next-line:no-use-before-declare
-  if (!Provider._debugMode.on) {
+  if (!DependencyProvider._debugMode.on) {
     return children as ReactElement<any>
   }
 
@@ -89,14 +89,14 @@ const Debug = (props: {
 
 type Props = {
   children: ReactElement<any>
-  provide: ProviderConfig[]
+  providers: ProviderConfig[]
 }
 type State = ContextApi
 
 /**
  *
  */
-export class Provider extends PureComponent<Props, State> {
+export class DependencyProvider extends PureComponent<Props, State> {
   static _debugMode = {
     on: false,
   }
@@ -164,23 +164,24 @@ export class Provider extends PureComponent<Props, State> {
   }
   private renderProvider = ({ injector: parentInjector }: ContextApi) => {
     this.injector =
-      this.injector || parentInjector.resolveAndCreateChild(this.props.provide)
+      this.injector ||
+      parentInjector.resolveAndCreateChild(this.props.providers)
 
     if (!this.providersRegistered) {
-      this.monkeyPatchStateProviders(this.injector, this.props.provide)
+      this.monkeyPatchStateProviders(this.injector, this.props.providers)
     }
 
     this.providersRegistered = true
 
-    if (Provider._debugMode.on) {
+    if (DependencyProvider._debugMode.on) {
       return (
         <Context.Provider value={this.contextApi}>
-          <Provider.Debug
+          <DependencyProvider.Debug
             parentInjector={parentInjector}
-            registeredProviders={this.props.provide}
+            registeredProviders={this.props.providers}
           >
             {this.props.children}
-          </Provider.Debug>
+          </DependencyProvider.Debug>
         </Context.Provider>
       )
     }

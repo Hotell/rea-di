@@ -7,7 +7,7 @@ import { mount } from 'enzyme'
 import { Injectable, Optional } from 'injection-js'
 import { noop, tuple } from '../helpers'
 import { Inject } from '../inject'
-import { Provider } from '../provider'
+import { DependencyProvider } from '../provider'
 import { Counter } from './setup/components'
 import { CounterService, Logger } from './setup/services'
 import { select } from './setup/utils'
@@ -17,7 +17,7 @@ class CounterModule extends Component<{ title: string }> {
     return (
       <div>
         <h3>{this.props.title}</h3>
-        <Inject providers={tuple(Logger, CounterService)}>
+        <Inject values={tuple(Logger, CounterService)}>
           {([logger, counterService]) => {
             return (
               <Counter counterService={counterService} logger={logger}>
@@ -34,9 +34,9 @@ class CounterModule extends Component<{ title: string }> {
 const App = () => {
   return (
     <main>
-      <Provider provide={[Logger, CounterService]}>
+      <DependencyProvider providers={[Logger, CounterService]}>
         <CounterModule title="count module" />
-      </Provider>
+      </DependencyProvider>
     </main>
   )
 }
@@ -94,9 +94,11 @@ describe(`Provide/Inject`, () => {
 
     const App = () => {
       return (
-        <Provider provide={[{ provide: Logger, useClass: LoggerMock }]}>
+        <DependencyProvider
+          providers={[{ provide: Logger, useClass: LoggerMock }]}
+        >
           <div data-test="parentInjector">
-            <Inject providers={[Logger]}>
+            <Inject values={[Logger]}>
               {([fromParentLogger]) => {
                 parentLoggerInstance = fromParentLogger as LoggerMock
 
@@ -109,11 +111,11 @@ describe(`Provide/Inject`, () => {
                     >
                       log from parent
                     </button>
-                    <Provider
-                      provide={[{ provide: Logger, useClass: LoggerMock }]}
+                    <DependencyProvider
+                      providers={[{ provide: Logger, useClass: LoggerMock }]}
                     >
                       <div data-test="childInjector">
-                        <Inject providers={[Logger]}>
+                        <Inject values={[Logger]}>
                           {([fromChildLogger]) => {
                             childLoggerInstance = fromChildLogger as LoggerMock
 
@@ -138,13 +140,13 @@ describe(`Provide/Inject`, () => {
                           }}
                         </Inject>
                       </div>
-                    </Provider>
+                    </DependencyProvider>
                   </div>
                 )
               }}
             </Inject>
           </div>
-        </Provider>
+        </DependencyProvider>
       )
     }
 
@@ -200,13 +202,13 @@ describe(`Provide/Inject`, () => {
 
     const App = () => {
       return (
-        <Provider provide={[Car]}>
-          <Inject providers={[Car]}>
+        <DependencyProvider providers={[Car]}>
+          <Inject values={[Car]}>
             {([car]) => {
               return <InjectConsumer car={car} />
             }}
           </Inject>
-        </Provider>
+        </DependencyProvider>
       )
     }
 
@@ -217,11 +219,11 @@ describe(`Provide/Inject`, () => {
 
     function willThrow() {
       const App = () => (
-        <Provider provide={[CarWillCrashWithoutEngine]}>
-          <Inject providers={[CarWillCrashWithoutEngine]}>
+        <DependencyProvider providers={[CarWillCrashWithoutEngine]}>
+          <Inject values={[CarWillCrashWithoutEngine]}>
             {(_) => JSON.stringify(_)}
           </Inject>
-        </Provider>
+        </DependencyProvider>
       )
 
       mount(<App />)

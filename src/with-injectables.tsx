@@ -35,7 +35,7 @@ export const withInjectables = <T extends Constructor[]>(providers: T) => {
         const { ...rest } = this.props as object
 
         return (
-          <Inject providers={providers}>
+          <Inject values={providers}>
             {(injectables) => <Cmp injectables={injectables} {...rest} />}
           </Inject>
         )

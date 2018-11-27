@@ -1,10 +1,10 @@
 import React, { Component, ComponentType } from 'react'
 
 import { createHOCName } from './helpers'
-import { Provider } from './provider'
+import { DependencyProvider } from './provider'
 import { HoCComponentClass, WrapperProps } from './types'
 
-type ProvidersSetup = Provider['props']['provide']
+type ProvidersSetup = DependencyProvider['props']['providers']
 
 /**
  * While this may give better performance, because provide array will be created only once,
@@ -24,9 +24,9 @@ export const withProvider = <T extends ProvidersSetup>(provideConfig: T) => {
         const { ...rest } = this.props as object
 
         return (
-          <Provider provide={provideConfig}>
+          <DependencyProvider providers={provideConfig}>
             <Cmp {...rest} />
-          </Provider>
+          </DependencyProvider>
         )
       }
     }

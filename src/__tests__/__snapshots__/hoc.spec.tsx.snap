@@ -28,8 +28,8 @@ exports[`Hoc wrappers should work with HoC 1`] = `
     <WithProvider(CounterModule)
       title="count module"
     >
-      <Provider
-        provide={
+      <DependencyProvider
+        providers={
           Array [
             [Function],
             [Function],
@@ -45,7 +45,7 @@ exports[`Hoc wrappers should work with HoC 1`] = `
             </h3>
             <WithInjectables(CounterForHoc)>
               <Inject
-                providers={
+                values={
                   Array [
                     [Function],
                     [Function],
@@ -97,7 +97,7 @@ exports[`Hoc wrappers should work with HoC 1`] = `
             </WithInjectables(CounterForHoc)>
           </div>
         </CounterModule>
-      </Provider>
+      </DependencyProvider>
     </WithProvider(CounterModule)>
   </main>
 </App>
