@@ -3,12 +3,7 @@ import React, { Component, ComponentType } from 'react'
 import { Type } from 'injection-js'
 import { createHOCName } from './helpers'
 import { Inject } from './inject'
-import {
-  HoC,
-  InstanceTypes,
-  ProvidersMap,
-  Subtract,
-} from './types'
+import { HoC, InstanceTypes, ProvidersMap, Subtract } from './types'
 
 /**
  * If you need to access injected service instances outside of render, you can use this high order component.
