@@ -18,7 +18,7 @@ class CounterModule extends Component<{ title: string }> {
       <div>
         <h3>{this.props.title}</h3>
         <Inject values={tuple(Logger, CounterService)}>
-          {([logger, counterService]) => {
+          {(logger, counterService) => {
             return (
               <Counter counterService={counterService} logger={logger}>
                 Hello projection
@@ -99,7 +99,7 @@ describe(`Provide/Inject`, () => {
         >
           <div data-test="parentInjector">
             <Inject values={[Logger]}>
-              {([fromParentLogger]) => {
+              {(fromParentLogger) => {
                 parentLoggerInstance = fromParentLogger as LoggerMock
 
                 return (
@@ -116,7 +116,7 @@ describe(`Provide/Inject`, () => {
                     >
                       <div data-test="childInjector">
                         <Inject values={[Logger]}>
-                          {([fromChildLogger]) => {
+                          {(fromChildLogger) => {
                             childLoggerInstance = fromChildLogger as LoggerMock
 
                             return (
@@ -204,7 +204,7 @@ describe(`Provide/Inject`, () => {
       return (
         <DependencyProvider providers={[Car]}>
           <Inject values={[Car]}>
-            {([car]) => {
+            {(car) => {
               return <InjectConsumer car={car} />
             }}
           </Inject>

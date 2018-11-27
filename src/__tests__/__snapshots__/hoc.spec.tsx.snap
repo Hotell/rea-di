@@ -7,25 +7,23 @@ exports[`Hoc wrappers should should return wrapped component with proper prop an
 `;
 
 exports[`Hoc wrappers should should return wrapped component with proper prop annotation 2`] = `
-<CounterForHoc
-  injectables={
-    Array [
-      Logger {},
-      CounterService {
-        "logger": Logger {},
-        "state": Object {
-          "count": 0,
-        },
+<Counter
+  counterService={
+    CounterService {
+      "logger": Logger {},
+      "state": Object {
+        "count": 0,
       },
-    ]
+    }
   }
+  logger={Logger {}}
 />
 `;
 
 exports[`Hoc wrappers should work with HoC 1`] = `
 <App>
   <main>
-    <WithProvider(CounterModule)
+    <WithDependencyProvider(CounterModule)
       title="count module"
     >
       <DependencyProvider
@@ -43,7 +41,7 @@ exports[`Hoc wrappers should work with HoC 1`] = `
             <h3>
               count module
             </h3>
-            <WithInjectables(CounterForHoc)>
+            <WithInjectables(Counter)>
               <Inject
                 values={
                   Array [
@@ -52,19 +50,17 @@ exports[`Hoc wrappers should work with HoC 1`] = `
                   ]
                 }
               >
-                <CounterForHoc
-                  injectables={
-                    Array [
-                      Logger {},
-                      CounterService {
-                        "logger": Logger {},
-                        "setState": [Function],
-                        "state": Object {
-                          "count": 0,
-                        },
+                <Counter
+                  counterService={
+                    CounterService {
+                      "logger": Logger {},
+                      "setState": [Function],
+                      "state": Object {
+                        "count": 0,
                       },
-                    ]
+                    }
                   }
+                  logger={Logger {}}
                 >
                   <div
                     className="counter"
@@ -92,13 +88,13 @@ exports[`Hoc wrappers should work with HoC 1`] = `
                       Hello projection
                     </section>
                   </div>
-                </CounterForHoc>
+                </Counter>
               </Inject>
-            </WithInjectables(CounterForHoc)>
+            </WithInjectables(Counter)>
           </div>
         </CounterModule>
       </DependencyProvider>
-    </WithProvider(CounterModule)>
+    </WithDependencyProvider(CounterModule)>
   </main>
 </App>
 `;

@@ -6,7 +6,7 @@ import { Constructor, InstanceTypes } from './types'
 
 type InjectProps<C extends Constructor[]> = {
   values: C
-  children: (resolvedInjectables: InstanceTypes<C>) => ReactNode
+  children: (...injectables: InstanceTypes<C>) => ReactNode
 }
 
 export class Inject<T extends Constructor[]> extends Component<InjectProps<T>> {
@@ -15,7 +15,7 @@ export class Inject<T extends Constructor[]> extends Component<InjectProps<T>> {
       injector.get(nextInjectableRef)
     ) as InstanceTypes<T>
 
-    return this.props.children(injectables)
+    return this.props.children(...(injectables as any))
   }
   render() {
     return <Context.Consumer>{this.injectMappedProviders}</Context.Consumer>
