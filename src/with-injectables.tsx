@@ -3,7 +3,7 @@ import React, { Component, ComponentType } from 'react'
 import { Type } from 'injection-js'
 import { createHOCName } from './helpers'
 import { Inject } from './inject'
-import { HoC, InstanceTypes, ProvidersMap, Subtract } from './types'
+import { HoC, InstanceTypes, Subtract, TypeMap } from './types'
 
 /**
  * If you need to access injected service instances outside of render, you can use this high order component.
@@ -12,7 +12,7 @@ import { HoC, InstanceTypes, ProvidersMap, Subtract } from './types'
  *
  * @param tokenMap - provider instances from injector to be mapped to wrapped component props
  */
-export const withInjectables = <TokenMap extends ProvidersMap>(
+export const withInjectables = <TokenMap extends TypeMap>(
   tokenMap: TokenMap
 ) => <
   OriginalProps extends InstanceTypes<TokenMap>,
@@ -20,19 +20,19 @@ export const withInjectables = <TokenMap extends ProvidersMap>(
 >(
   Cmp: ComponentType<OriginalProps>
 ): HoC<ResolvedProps, typeof Cmp> => {
+  const injectablePropsKeys: Array<keyof TokenMap> = Object.keys(tokenMap)
+  const tokenRefs = injectablePropsKeys.map((propKey) => tokenMap[propKey])
+
   class WithInjectables extends Component<ResolvedProps> {
     static displayName: string = createHOCName(WithInjectables, Cmp)
     static readonly WrappedComponent = Cmp
 
     private injectTokensMap(
       providersMap: TokenMap,
+      propsKeys: Array<keyof TokenMap>,
       injectables: InstanceTypes<Type<any>[]>
     ) {
-      const injectablePropKeys: Array<keyof TokenMap> = Object.keys(
-        providersMap
-      )
-
-      const injectProps = injectablePropKeys.reduce((acc, nextPropKey) => {
+      const injectProps = propsKeys.reduce((acc, nextPropKey) => {
         const token = providersMap[nextPropKey]
         const injectable =
           injectables.find((injectableInstance) => {
@@ -48,15 +48,17 @@ export const withInjectables = <TokenMap extends ProvidersMap>(
     render() {
       const { ...rest } = this.props as object /* FIXED in ts 3.2 */
 
-      const injectablePropKeys: (keyof TokenMap)[] = Object.keys(tokenMap)
-      const tokenRefs = injectablePropKeys.map((propKey) => {
-        return tokenMap[propKey]
-      })
-
       return (
         <Inject values={tokenRefs}>
           {(...injectables) => (
-            <Cmp {...this.injectTokensMap(tokenMap, injectables)} {...rest} />
+            <Cmp
+              {...this.injectTokensMap(
+                tokenMap,
+                injectablePropsKeys,
+                injectables
+              )}
+              {...rest}
+            />
           )}
         </Inject>
       )

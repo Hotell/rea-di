@@ -1,15 +1,16 @@
-import { ProvidersMap } from '../types'
+import { TypeMap } from '../types'
 import { CounterService, Logger } from './setup/services'
 
 describe(`types`, () => {
-  describe(`ProviderMaps`, () => {
+  describe(`TypeMap`, () => {
     const providersTokenMap = {
       logger: Logger,
       counter: CounterService,
     }
 
     it(`should properly annotate object map with Type/Class tokens`, () => {
-      type Test = ProvidersMap<typeof providersTokenMap>
+      type Test = TypeMap<typeof providersTokenMap>
+
       const expected: Test = {
         counter: CounterService,
         logger: Logger,

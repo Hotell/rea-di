@@ -3,9 +3,15 @@ import { ComponentClass, ComponentType } from 'react'
 
 export type StateCallback<T = {}> = (state: T) => Partial<T>
 
-export type ProvidersMap<
+export type TypeMap<
   T extends { [key: string]: Type<any> } = { [key: string]: Type<any> }
 > = { [K in keyof T]: T[K] }
+
+export type StringMap<T> = { [key: string]: T }
+
+export type Values<T extends object> = T extends { [k: string]: infer V }
+  ? V
+  : never
 
 export type HoC<
   P,
