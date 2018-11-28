@@ -1,3 +1,5 @@
+// tslint:disable:jsx-no-lambda
+
 import React, { Component, createRef } from 'react'
 import { Link } from 'react-router-dom'
 import { Subject } from 'rxjs'
@@ -8,8 +10,8 @@ import {
   takeUntil,
 } from 'rxjs/operators'
 
-import { HeroService } from '../hero.service'
 import { Hero } from '../hero'
+import { HeroService } from '../hero.service'
 
 import './hero-search.css'
 
@@ -22,6 +24,7 @@ const initialState = {
   heroes: [] as Hero[],
 }
 
+const DEBOUNCE_TIME = 300
 export class HeroSearch extends Component<Props, State> {
   readonly state: State = initialState
 
@@ -31,7 +34,7 @@ export class HeroSearch extends Component<Props, State> {
   private readonly heroes$ = this.searchTerms.pipe(
     takeUntil(this.onUnmount$),
     // wait 300ms after each keystroke before considering the term
-    debounceTime(300),
+    debounceTime(DEBOUNCE_TIME),
 
     // ignore new term if same as previous term
     distinctUntilChanged(),
@@ -42,6 +45,7 @@ export class HeroSearch extends Component<Props, State> {
 
   render() {
     const { heroes } = this.state
+
     return (
       <div className="hero-search">
         <h4>Hero Search</h4>

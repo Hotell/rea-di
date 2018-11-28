@@ -3,8 +3,8 @@ import './dashboard.css'
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
 
-import { HeroService } from '../hero.service'
 import { Hero } from '../hero'
+import { HeroService } from '../hero.service'
 import { HeroSearch } from './hero-search'
 
 type Props = {
@@ -49,6 +49,7 @@ export class Dashboard extends Component<Props, State> {
     this.props.heroService
       .getHeroes()
       // This getHeroes reduces the number of heroes displayed to four (2nd, 3rd, 4th, and 5th).
+      // tslint:disable-next-line:no-magic-numbers
       .then((heroes) => this.setState({ heroes: heroes.slice(1, 5) }))
   }
 }

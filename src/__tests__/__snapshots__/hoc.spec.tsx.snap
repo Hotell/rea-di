@@ -23,11 +23,11 @@ exports[`Hoc wrappers should should return wrapped component with proper prop an
 exports[`Hoc wrappers should work with HoC 1`] = `
 <App>
   <main>
-    <WithProvider(CounterModule)
+    <WithDependencyProvider(CounterModule)
       title="count module"
     >
-      <Provider
-        provide={
+      <DependencyProvider
+        providers={
           Array [
             [Function],
             [Function],
@@ -43,11 +43,11 @@ exports[`Hoc wrappers should work with HoC 1`] = `
             </h3>
             <WithInjectables(Counter)>
               <Inject
-                providers={
-                  Object {
-                    "counterService": [Function],
-                    "logger": [Function],
-                  }
+                values={
+                  Array [
+                    [Function],
+                    [Function],
+                  ]
                 }
               >
                 <Counter
@@ -58,69 +58,6 @@ exports[`Hoc wrappers should work with HoC 1`] = `
                       "state": Object {
                         "count": 0,
                       },
-                    }
-                  }
-                  injector={
-                    ReflectiveInjector_ {
-                      "_constructionCounter": 2,
-                      "_parent": ReflectiveInjector_ {
-                        "_constructionCounter": 0,
-                        "_parent": null,
-                        "_providers": Array [],
-                        "keyIds": Array [],
-                        "objs": Array [],
-                      },
-                      "_providers": Array [
-                        ResolvedReflectiveProvider_ {
-                          "key": ReflectiveKey {
-                            "id": 1,
-                            "token": [Function],
-                          },
-                          "multiProvider": false,
-                          "resolvedFactories": Array [
-                            ResolvedReflectiveFactory {
-                              "dependencies": Array [],
-                              "factory": [Function],
-                            },
-                          ],
-                        },
-                        ResolvedReflectiveProvider_ {
-                          "key": ReflectiveKey {
-                            "id": 2,
-                            "token": [Function],
-                          },
-                          "multiProvider": false,
-                          "resolvedFactories": Array [
-                            ResolvedReflectiveFactory {
-                              "dependencies": Array [
-                                ReflectiveDependency {
-                                  "key": ReflectiveKey {
-                                    "id": 1,
-                                    "token": [Function],
-                                  },
-                                  "optional": false,
-                                  "visibility": null,
-                                },
-                              ],
-                              "factory": [Function],
-                            },
-                          ],
-                        },
-                      ],
-                      "keyIds": Array [
-                        1,
-                        2,
-                      ],
-                      "objs": Array [
-                        Logger {},
-                        CounterService {
-                          "logger": Logger {},
-                          "setState": [Function],
-                          "state": Object {
-                            "count": 0,
-                          },
-                        },
-                      ],
                     }
                   }
                   logger={Logger {}}
@@ -156,8 +93,8 @@ exports[`Hoc wrappers should work with HoC 1`] = `
             </WithInjectables(Counter)>
           </div>
         </CounterModule>
-      </Provider>
-    </WithProvider(CounterModule)>
+      </DependencyProvider>
+    </WithDependencyProvider(CounterModule)>
   </main>
 </App>
 `;

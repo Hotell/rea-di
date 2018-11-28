@@ -1,14 +1,16 @@
-import { Injectable, InjectionToken, Optional, Inject } from 'injection-js'
+import { Inject, Injectable, InjectionToken, Optional } from 'injection-js'
 
 import { CounterService } from './counter.service'
-import { Logger } from './logger.service'
 import { getClassName } from './helpers'
+import { Logger } from './logger.service'
 
 const defaultConfig = {
   multiplyBy: 2,
 }
 export type MultiplyCounterConfig = typeof defaultConfig
-export const MultiplyCounterConfig = new InjectionToken('MultiplyCounterConfig')
+export const MultiplyCounterConfig = new InjectionToken<MultiplyCounterConfig>(
+  'MultiplyCounterConfig'
+)
 
 @Injectable()
 export class MultiplyCounterService extends CounterService {

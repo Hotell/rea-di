@@ -1,37 +1,37 @@
-import { Provider as ProviderConfig } from 'injection-js'
 import React, { Component, ComponentType } from 'react'
 
 import { createHOCName } from './helpers'
-import { Provider } from './provider'
-import { HoCComponentClass, WrapperProps } from './types'
+import { DependencyProvider } from './provider'
+import { HoC, Subtract } from './types'
 
-type ProvidersSetup = { provide: ProviderConfig[] }
+type ProvidersSetup = DependencyProvider['props']['providers']
 
 /**
  * While this may give better performance, because provide array will be created only once,
- * prefer to use standard <Provider provide={[]}>...</Provider> within you render tree
- * @param provideConfig
+ * prefer to use standard <DependencyProvider providers={[]}>...</DependencyProvider> within you render tree
+ *
+ * @param providers - providers configuration to be registered within injector
  */
-export const withProvider = <T extends ProvidersSetup>(provideConfig: T) => {
-  return <OriginalProps extends {}>(
-    Cmp: ComponentType<OriginalProps>
-  ): HoCComponentClass<WrapperProps<OriginalProps, T>, typeof Cmp> => {
-    class WithProvider extends Component<WrapperProps<OriginalProps, T>> {
-      static displayName: string = createHOCName(WithProvider, Cmp)
+export const withDependencyProvider = <T extends ProvidersSetup>(
+  ...providers: T
+) => <OriginalProps extends object, ResolvedProps = Subtract<OriginalProps, T>>(
+  Cmp: ComponentType<OriginalProps>
+): HoC<ResolvedProps, typeof Cmp> => {
+  class WithDependencyProvider extends Component<ResolvedProps> {
+    static displayName: string = createHOCName(WithDependencyProvider, Cmp)
 
-      static readonly WrappedComponent = Cmp
+    static readonly WrappedComponent = Cmp
 
-      render() {
-        const { ...rest } = this.props as object
+    render() {
+      const { ...rest } = this.props as object /* FIXED in ts 3.2 */
 
-        return (
-          <Provider {...provideConfig}>
-            <Cmp {...rest} />
-          </Provider>
-        )
-      }
+      return (
+        <DependencyProvider providers={providers}>
+          <Cmp {...rest} />
+        </DependencyProvider>
+      )
     }
-
-    return WithProvider
   }
+
+  return WithDependencyProvider
 }

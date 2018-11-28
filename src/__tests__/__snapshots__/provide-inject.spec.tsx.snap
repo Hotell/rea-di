@@ -3,8 +3,8 @@
 exports[`Provide/Inject should properly inject 1`] = `
 <App>
   <main>
-    <Provider
-      provide={
+    <DependencyProvider
+      providers={
         Array [
           [Function],
           [Function],
@@ -19,11 +19,11 @@ exports[`Provide/Inject should properly inject 1`] = `
             count module
           </h3>
           <Inject
-            providers={
-              Object {
-                "counterService": [Function],
-                "logger": [Function],
-              }
+            values={
+              Array [
+                [Function],
+                [Function],
+              ]
             }
           >
             <Counter
@@ -68,7 +68,7 @@ exports[`Provide/Inject should properly inject 1`] = `
           </Inject>
         </div>
       </CounterModule>
-    </Provider>
+    </DependencyProvider>
   </main>
 </App>
 `;

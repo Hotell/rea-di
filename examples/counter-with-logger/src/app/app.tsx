@@ -1,4 +1,4 @@
-import { Inject, Provider } from '@martin_hotell/rea-di'
+import { DependencyProvider, Inject } from '@martin_hotell/rea-di'
 import { Component, createElement } from 'react'
 
 import { Counter } from './counter'
@@ -10,13 +10,11 @@ export class App extends Component {
     return (
       <div className="app">
         <h1>Counter app</h1>
-        <Provider provide={[CounterService, Logger]}>
-          <Inject providers={{ counterService: CounterService }}>
-            {(injectables) => (
-              <Counter counterService={injectables.counterService} />
-            )}
+        <DependencyProvider providers={[CounterService, Logger]}>
+          <Inject values={[CounterService]}>
+            {(counterService) => <Counter counterService={counterService} />}
           </Inject>
-        </Provider>
+        </DependencyProvider>
       </div>
     )
   }

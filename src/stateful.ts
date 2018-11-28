@@ -1,6 +1,6 @@
 import { StateCallback } from './types'
 
-export abstract class WithState<T extends object> {
+export abstract class Stateful<T extends object> {
   protected abstract state: null | Readonly<T> = null
   protected setState(stateFn: StateCallback<T>) {
     const newState = {

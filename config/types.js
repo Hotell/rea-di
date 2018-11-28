@@ -1,35 +1,9 @@
-// @ts-check
 export {}
-
-const { defaults } = require('jest-config')
-
-// ==== WEBPACK ====
-
-/**
- * @typedef {import('webpack').Configuration} WebpackConfig
- */
-
-/**
- * @typedef {import('webpack').Rule} WebpackRule
- */
-/**
- *
-/**
- * @typedef {import('webpack').Plugin} WebpackPlugin
- */
-
-/**
- * @typedef {import('webpack').ExternalsElement} WebpackExternals
- */
-
-/**
- * @typedef {{dev:boolean} | {prod:boolean}} Env
- */
 
 // ===== JEST ====
 
 /**
- * @typedef {import('ts-jest/dist/jest-types').TsJestConfig} TsJestConfig
+ * @typedef {import('ts-jest/dist/types').TsJestConfig} TsJestConfig
  */
 
 // @TODO https://github.com/Microsoft/TypeScript/issues/24916
@@ -44,4 +18,13 @@ const { defaults } = require('jest-config')
 // ==== PRETTIER ====
 /**
  * @typedef {import('prettier').Options} PrettierConfig
+ */
+
+// ==== ROLLUP ====
+/**
+ * @typedef {import('rollup').InputOptions & { output: import('rollup').OutputOptions | Array<import('rollup').OutputOptions | null> }} RollupConfig
+ */
+
+/**
+ * @typedef {import('rollup').Plugin} RollupPlugin
  */

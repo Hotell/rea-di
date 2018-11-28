@@ -1,5 +1,7 @@
-import React, { Component } from 'react'
+// tslint:disable:jsx-no-lambda
+
 import { Inject } from '@martin_hotell/rea-di'
+import React, { Component } from 'react'
 
 import './messages.css'
 
@@ -11,8 +13,8 @@ export class Messages extends Component {
       <div className="messages">
         <h2>Messages</h2>
         <div>
-          <Inject providers={{ messageService: MessageService }}>
-            {({ messageService }) =>
+          <Inject values={[MessageService]}>
+            {(messageService) =>
               messageService.state.messages.length ? (
                 <>
                   <button

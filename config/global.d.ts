@@ -1,32 +1,75 @@
-declare module 'jest-config' {
-  const defaults: jest.DefaultOptions
+// ============================
+// ts-jest types require 'babel__core'
+// ============================
+declare module 'babel__core' {
+  interface TransformOptions {}
 }
 
-declare module 'webpack-config-utils' {
-  namespace WebpackConfigUtils {
-    type RemoveEmpty = <T extends object | any[]>(input: T) => T
-    type GetIfUtils = (env: object | string, vars?: any[]) => IfUtils
-    type PropIf = <A, I, E>(add: A, value: I, alternate: E) => I | E
-    type PropIfNot = PropIf
-    // type IfUtilsFn = <Y, N>(value?: Y, alternate?: N) => Y | N
-    interface IfUtilsFn {
-      <Y, N>(value: Y, alternate?: N): Y | N
-      (): boolean
-    }
-    interface IfUtils {
-      ifDevelopment: IfUtilsFn
-      ifNotDevelopment: IfUtilsFn
-      ifDev: IfUtilsFn
-      ifNotDev: IfUtilsFn
-      ifProduction: IfUtilsFn
-      ifNotProduction: IfUtilsFn
-      ifProd: IfUtilsFn
-      ifNotProd: IfUtilsFn
-      ifTest: IfUtilsFn
-      ifNotTest: IfUtilsFn
-    }
-  }
+// ============================
+// Rollup plugins without types
+// ============================
+type RollupPluginImpl<O extends object = object> = import('rollup').PluginImpl<
+  O
+>
 
-  export const getIfUtils: WebpackConfigUtils.GetIfUtils
-  export const removeEmpty: WebpackConfigUtils.RemoveEmpty
+declare module 'rollup-plugin-json' {
+  export interface Options {
+    /**
+     *  All JSON files will be parsed by default, but you can also specifically include/exclude files
+     */
+    include?: string | string[]
+    exclude?: string | string[]
+    /**
+     *  for tree-shaking, properties will be declared as variables, using either `var` or `const`
+     *  @default false
+     */
+    preferConst?: boolean
+    /**
+     * specify indentation for the generated default export — defaults to '\t'
+     * @default '\t'
+     */
+    indent?: string
+  }
+  const plugin: RollupPluginImpl<Options>
+  export default plugin
+}
+declare module 'rollup-plugin-sourcemaps' {
+  const plugin: RollupPluginImpl
+  export default plugin
+}
+declare module 'rollup-plugin-node-resolve' {
+  const plugin: RollupPluginImpl
+  export default plugin
+}
+declare module 'rollup-plugin-commonjs' {
+  const plugin: RollupPluginImpl
+  export default plugin
+}
+declare module 'rollup-plugin-replace' {
+  const plugin: RollupPluginImpl
+  export default plugin
+}
+declare module 'rollup-plugin-uglify' {
+  const uglify: RollupPluginImpl
+  export { uglify }
+}
+declare module 'rollup-plugin-terser' {
+  const terser: RollupPluginImpl
+  export { terser }
+}
+
+// =====================
+// missing library types
+// =====================
+declare module '@commitlint/core' {
+  interface Config {
+    extends: string[]
+  }
+}
+declare module 'sort-object-keys' {
+  const sortPackageJson: <T extends {}>(
+    object: T,
+    sortWith?: (...args: any[]) => any
+  ) => T
+  export = sortPackageJson
 }

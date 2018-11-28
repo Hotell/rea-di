@@ -7,7 +7,7 @@ import React, { Component } from 'react'
 import { ReflectiveInjector } from 'injection-js'
 import { noop } from '../helpers'
 import { withInjectables } from '../with-injectables'
-import { withProvider } from '../with-provider'
+import { withDependencyProvider } from '../with-provider'
 import { Counter } from './setup/components'
 import { CounterService, Logger } from './setup/services'
 
@@ -21,9 +21,9 @@ class CounterModule extends Component<{ title: string }> {
     )
   }
 }
-const CounterModuleEnhanced = withProvider({
-  provide: [Logger, CounterService],
-})(CounterModule)
+const CounterModuleEnhanced = withDependencyProvider(Logger, CounterService)(
+  CounterModule
+)
 
 const CounterEnhanced = withInjectables({
   logger: Logger,
@@ -97,15 +97,15 @@ describe('Hoc wrappers', () => {
     ).toMatchSnapshot()
     expect(
       <CounterEnhanced.WrappedComponent
-        counterService={counter}
         logger={logger}
+        counterService={counter}
       />
     ).toMatchSnapshot()
   })
 
   it(`should should create proper displayName`, () => {
     expect(CounterModuleEnhanced.displayName).toBe(
-      'WithProvider(CounterModule)'
+      'WithDependencyProvider(CounterModule)'
     )
     expect(CounterEnhanced.displayName).toBe('WithInjectables(Counter)')
   })

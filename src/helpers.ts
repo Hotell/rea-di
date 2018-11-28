@@ -16,3 +16,5 @@ export const createHOCName = <P>(
 
 // tslint:disable-next-line:no-empty
 export const noop = () => {}
+
+export const tuple = <T extends any[]>(...args: T): T => args

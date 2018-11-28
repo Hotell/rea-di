@@ -1,8 +1,9 @@
-import { Inject, Provider } from '@martin_hotell/rea-di'
+// tslint:disable:jsx-no-lambda
+
+import { DependencyProvider, Inject } from '@martin_hotell/rea-di'
 import React, { Component } from 'react'
 import {
   BrowserRouter as Router,
-  Link,
   NavLink,
   Redirect,
   Route,
@@ -19,8 +20,8 @@ export class App extends Component {
   render() {
     return (
       <div className="app">
-        <Provider
-          provide={[
+        <DependencyProvider
+          providers={[
             MessageService,
             HeroService,
             HttpClient,
@@ -44,28 +45,24 @@ export class App extends Component {
                 <Route
                   path="/dashboard"
                   render={(props) => (
-                    <Inject providers={{ heroService: HeroService }}>
-                      {({ heroService }) => (
-                        <Dashboard heroService={heroService} />
-                      )}
+                    <Inject values={[HeroService]}>
+                      {(heroService) => <Dashboard heroService={heroService} />}
                     </Inject>
                   )}
                 />
                 <Route
                   path="/heroes"
                   render={(props) => (
-                    <Inject providers={{ heroService: HeroService }}>
-                      {({ heroService }) => (
-                        <Heroes heroService={heroService} />
-                      )}
+                    <Inject values={[HeroService]}>
+                      {(heroService) => <Heroes heroService={heroService} />}
                     </Inject>
                   )}
                 />
                 <Route
                   path="/detail/:id"
                   render={(props) => (
-                    <Inject providers={{ heroService: HeroService }}>
-                      {({ heroService }) => (
+                    <Inject values={[HeroService]}>
+                      {(heroService) => (
                         <HeroDetail {...props} heroService={heroService} />
                       )}
                     </Inject>
@@ -76,7 +73,7 @@ export class App extends Component {
               <Messages />
             </>
           </Router>
-        </Provider>
+        </DependencyProvider>
       </div>
     )
   }

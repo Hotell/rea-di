@@ -1,6 +1,6 @@
 import { Injectable } from 'injection-js'
 
-import { WithState } from '../../with-state'
+import { Stateful } from '../../stateful'
 
 @Injectable()
 export class Logger {
@@ -14,7 +14,7 @@ type State = Readonly<{
 }>
 
 @Injectable()
-export class CounterService extends WithState<State> {
+export class CounterService extends Stateful<State> {
   readonly state: State = { count: 0 }
 
   constructor(private logger: Logger) {

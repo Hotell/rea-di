@@ -3,90 +3,107 @@ import {
   ReflectiveInjector,
   Type,
 } from 'injection-js'
-import React, { PureComponent, ReactNode } from 'react'
+import React, { PureComponent, ReactElement, ReactNode } from 'react'
 
 import { Context, ContextApi, rootInjector } from './context'
 import { isProvider, isType } from './guards'
 import { StateCallback } from './types'
 
-type Props = { provide: ProviderConfig[] }
+const Debug = (props: {
+  parentInjector: ReflectiveInjector
+  children: ReactNode
+  registeredProviders: ProviderConfig[]
+  label?: string
+}) => {
+  const { children, label, registeredProviders, parentInjector } = props
+
+  // tslint:disable-next-line:no-use-before-declare
+  if (!DependencyProvider._debugMode.on) {
+    return children as ReactElement<any>
+  }
+
+  const isRoot = parentInjector === rootInjector
+  const injectorLabel = label || isRoot ? 'Root Injector' : 'Child Injector'
+  const bgColor = isRoot ? 'red' : '#388e3c'
+  const styling = {
+    container: { border: `2px solid ${bgColor}`, padding: '.5rem' },
+    header: { backgroundColor: bgColor, padding: `.5rem .25rem` },
+    title: { margin: 0, backgroundColor: bgColor },
+  }
+
+  const registeredProvidersNames: string[] = getRegisteredProvidersNames(
+    registeredProviders
+  )
+
+  return (
+    <div style={styling.container}>
+      <header style={styling.header}>
+        <h4 style={styling.title}>{injectorLabel}</h4>
+        <pre>
+          <b>Registered Providers:</b> {json(registeredProvidersNames)}
+        </pre>
+      </header>
+      {children}
+    </div>
+  )
+
+  function json<T>(value: T) {
+    // tslint:disable-next-line:no-magic-numbers
+    return JSON.stringify(value, null, 2)
+  }
+
+  function getRegisteredProvidersNames(providers: ProviderConfig[]): string[] {
+    return providers.reduce((acc, next) => {
+      if (isType(next)) {
+        return [...(acc as string[]), next.name]
+      }
+
+      if (isProvider(next)) {
+        const [registrationKey] = Object.keys(next).filter(
+          (val) => val !== 'provide'
+        )
+
+        const registrationValue = (next as {
+          [key: string]: any
+        })[registrationKey] as Type<any> | object
+
+        const providerName = {
+          provide: next.provide.name ? next.provide.name : next.provide._desc,
+          as: isType(registrationValue)
+            ? registrationValue.name
+            : JSON.stringify(registrationValue),
+        }
+
+        return [
+          ...(acc as string[]),
+          `{provide: ${providerName.provide}, ${registrationKey}: ${
+            providerName.as
+          } }`,
+        ]
+      }
+
+      return acc
+    }, []) as string[]
+  }
+}
+
+type Props = {
+  children: ReactElement<any>
+  providers: ProviderConfig[]
+}
 type State = ContextApi
-export class Provider extends PureComponent<Props, State> {
-  private static debugMode = {
+
+/**
+ *
+ */
+export class DependencyProvider extends PureComponent<Props, State> {
+  static _debugMode = {
     on: false,
   }
   static enableDebugMode() {
-    this.debugMode.on = true
+    this._debugMode.on = true
   }
-  private static Debug = (props: {
-    parentInjector: ReflectiveInjector
-    children: ReactNode
-    registeredProviders: ProviderConfig[]
-    label?: string
-  }) => {
-    const { children, label, registeredProviders, parentInjector } = props
-    if (!Provider.debugMode.on) {
-      return children as JSX.Element
-    }
-
-    const isRoot = parentInjector === rootInjector
-    const injectorLabel = label || isRoot ? 'Root Injector' : 'Child Injector'
-    const bgColor = isRoot ? 'red' : '#388e3c'
-    const styling = {
-      container: { border: `2px solid ${bgColor}`, padding: '.5rem' },
-      header: { backgroundColor: bgColor, padding: `.5rem .25rem` },
-      title: { margin: 0, backgroundColor: bgColor },
-    }
-
-    const registeredProvidersNames: string[] = registeredProviders.reduce(
-      (acc, next) => {
-        if (isType(next)) {
-          return [...(acc as string[]), next.name]
-        }
-        if (isProvider(next)) {
-          const [registrationKey] = Object.keys(next).filter(
-            (val) => val !== 'provide'
-          )
-          const registrationValue = (next as { [key: string]: any })[
-            registrationKey
-          ] as Type<any> | object
-          const providerName = {
-            provide: next.provide.name ? next.provide.name : next.provide._desc,
-            as: isType(registrationValue)
-              ? registrationValue.name
-              : JSON.stringify(registrationValue),
-          }
-
-          return [
-            ...(acc as string[]),
-            `{provide: ${providerName.provide}, ${registrationKey}: ${
-              providerName.as
-            } }`,
-          ]
-        }
-
-        return acc
-      },
-      []
-    ) as string[]
-
-    return (
-      <div style={styling.container}>
-        <header style={styling.header}>
-          <h4 style={styling.title}>{injectorLabel}</h4>
-          <pre>
-            <b>Registeted Providers:</b> {json(registeredProvidersNames)}
-          </pre>
-        </header>
-        {children}
-      </div>
-    )
-
-    function json<T>(value: T) {
-      // tslint:disable-next-line:no-magic-numbers
-      return JSON.stringify(value, null, 2)
-    }
-  }
+  private static Debug = Debug
 
   private injector?: ReflectiveInjector
   readonly state: State = {} as State
@@ -146,24 +163,25 @@ export class Provider extends PureComponent<Props, State> {
     }
   }
   private renderProvider = ({ injector: parentInjector }: ContextApi) => {
-    // private renderProvider = (parentInjector: ReflectiveInjector) => {
     this.injector =
-      this.injector || parentInjector.resolveAndCreateChild(this.props.provide)
+      this.injector ||
+      parentInjector.resolveAndCreateChild(this.props.providers)
 
     if (!this.providersRegistered) {
-      this.monkeyPatchStateProviders(this.injector, this.props.provide)
+      this.monkeyPatchStateProviders(this.injector, this.props.providers)
     }
+
     this.providersRegistered = true
 
-    if (Provider.debugMode.on) {
+    if (DependencyProvider._debugMode.on) {
       return (
         <Context.Provider value={this.contextApi}>
-          <Provider.Debug
+          <DependencyProvider.Debug
             parentInjector={parentInjector}
-            registeredProviders={this.props.provide}
+            registeredProviders={this.props.providers}
           >
             {this.props.children}
-          </Provider.Debug>
+          </DependencyProvider.Debug>
         </Context.Provider>
       )
     }

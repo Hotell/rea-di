@@ -1,11 +1,12 @@
+// tslint:disable:jsx-no-lambda
 import React, { Component, SyntheticEvent } from 'react'
 import { RouteComponentProps } from 'react-router-dom'
 
 import './hero-detail.css'
 
 import { Hero } from '../hero'
-import { uppercase } from '../shared'
 import { HeroService } from '../hero.service'
+import { uppercase } from '../shared'
 
 type Props = {
   hero?: Hero | null

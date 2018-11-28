@@ -6,7 +6,6 @@
       "dom","es2015"
     ],
     "module": "esnext",
-    "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
     "jsx": "react",
     "outDir": "dist",

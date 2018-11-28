@@ -4,9 +4,10 @@
 import React, { Component } from 'react'
 
 import { mount } from 'enzyme'
-import { noop } from '../helpers'
+import { Injectable, Optional } from 'injection-js'
+import { noop, tuple } from '../helpers'
 import { Inject } from '../inject'
-import { Provider } from '../provider'
+import { DependencyProvider } from '../provider'
 import { Counter } from './setup/components'
 import { CounterService, Logger } from './setup/services'
 import { select } from './setup/utils'
@@ -16,13 +17,10 @@ class CounterModule extends Component<{ title: string }> {
     return (
       <div>
         <h3>{this.props.title}</h3>
-        <Inject providers={{ logger: Logger, counterService: CounterService }}>
-          {(injectables) => {
+        <Inject values={tuple(Logger, CounterService)}>
+          {(logger, counterService) => {
             return (
-              <Counter
-                counterService={injectables.counterService}
-                logger={injectables.logger}
-              >
+              <Counter counterService={counterService} logger={logger}>
                 Hello projection
               </Counter>
             )
@@ -36,9 +34,9 @@ class CounterModule extends Component<{ title: string }> {
 const App = () => {
   return (
     <main>
-      <Provider provide={[Logger, CounterService]}>
+      <DependencyProvider providers={[Logger, CounterService]}>
         <CounterModule title="count module" />
-      </Provider>
+      </DependencyProvider>
     </main>
   )
 }
@@ -96,41 +94,43 @@ describe(`Provide/Inject`, () => {
 
     const App = () => {
       return (
-        <Provider provide={[{ provide: Logger, useClass: LoggerMock }]}>
+        <DependencyProvider
+          providers={[{ provide: Logger, useClass: LoggerMock }]}
+        >
           <div data-test="parentInjector">
-            <Inject providers={{ logger: Logger }}>
-              {(fromParent) => {
-                parentLoggerInstance = fromParent.logger as LoggerMock
+            <Inject values={[Logger]}>
+              {(fromParentLogger) => {
+                parentLoggerInstance = fromParentLogger as LoggerMock
 
                 return (
                   <div>
                     <button
                       onClick={() => {
-                        fromParent.logger.log('from parent')
+                        fromParentLogger.log('from parent')
                       }}
                     >
                       log from parent
                     </button>
-                    <Provider
-                      provide={[{ provide: Logger, useClass: LoggerMock }]}
+                    <DependencyProvider
+                      providers={[{ provide: Logger, useClass: LoggerMock }]}
                     >
                       <div data-test="childInjector">
-                        <Inject providers={{ logger: Logger }}>
-                          {(fromChild) => {
-                            childLoggerInstance = fromChild.logger as LoggerMock
+                        <Inject values={[Logger]}>
+                          {(fromChildLogger) => {
+                            childLoggerInstance = fromChildLogger as LoggerMock
 
                             return (
                               <div>
                                 <button
                                   onClick={() => {
-                                    fromParent.logger.log('parent from child')
+                                    fromParentLogger.log('parent from child')
                                   }}
                                 >
                                   log parent from child
                                 </button>
                                 <button
                                   onClick={() => {
-                                    fromChild.logger.log('from child')
+                                    fromChildLogger.log('from child')
                                   }}
                                 >
                                   log from child
@@ -140,13 +140,13 @@ describe(`Provide/Inject`, () => {
                           }}
                         </Inject>
                       </div>
-                    </Provider>
+                    </DependencyProvider>
                   </div>
                 )
               }}
             </Inject>
           </div>
-        </Provider>
+        </DependencyProvider>
       )
     }
 
@@ -177,5 +177,60 @@ describe(`Provide/Inject`, () => {
     expect(parentLoggerInstance.log).toHaveBeenCalledTimes(2)
     expect(childLoggerInstance.log).toHaveBeenCalledTimes(1)
     expect(childLoggerInstance.log).toHaveBeenLastCalledWith('from child')
+  })
+
+  it(`should properly resolve @Optional injection`, () => {
+    @Injectable()
+    class Engine {}
+
+    @Injectable()
+    class Car {
+      engine: Engine | null
+      constructor(@Optional() engine: Engine) {
+        this.engine = engine ? engine : null
+      }
+    }
+
+    @Injectable()
+    class CarWillCrashWithoutEngine {
+      constructor(public engine: Engine) {}
+    }
+
+    const InjectConsumer = (props: { car: Car }) => {
+      return <div>{JSON.stringify(props.car)}</div>
+    }
+
+    const App = () => {
+      return (
+        <DependencyProvider providers={[Car]}>
+          <Inject values={[Car]}>
+            {(car) => {
+              return <InjectConsumer car={car} />
+            }}
+          </Inject>
+        </DependencyProvider>
+      )
+    }
+
+    const tree = mount(<App />)
+
+    expect(tree.text()).toEqual(`{"engine":null}`)
+    expect(tree.find(InjectConsumer).prop('car').engine).toBe(null)
+
+    function willThrow() {
+      const App = () => (
+        <DependencyProvider providers={[CarWillCrashWithoutEngine]}>
+          <Inject values={[CarWillCrashWithoutEngine]}>
+            {(_) => JSON.stringify(_)}
+          </Inject>
+        </DependencyProvider>
+      )
+
+      mount(<App />)
+    }
+
+    expect(willThrow).toThrow(
+      'No provider for Engine! (CarWillCrashWithoutEngine -> Engine)'
+    )
   })
 })

@@ -10,8 +10,8 @@ import './counter.css'
 export class Counter extends Component {
   render() {
     return (
-      <Inject providers={{ counterService: CounterService }}>
-        {({ counterService }) => (
+      <Inject values={[CounterService]}>
+        {(counterService) => (
           <div className="counter">
             <p>Clicked: {counterService.state.count} times</p>
             <p className="counter-actions">

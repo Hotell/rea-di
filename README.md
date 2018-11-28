@@ -40,8 +40,11 @@ Let's demonstrate simple usage with old good Counter example:
 [![Edit counter-example](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/github/Hotell/rea-di/tree/master/examples/counter)
 
 ```tsx
-import React from 'react'
+import React, { Component } from 'react'
 import { render } from 'react-dom'
+
+import { Injectable } from 'injection-js'
+import { DependencyProvider, Stateful } from '@martin_hotell/rea-di'
 
 // we create injectable and state aware service
 
@@ -51,8 +54,8 @@ const initialState = {
 }
 
 @Injectable()
-export class CounterService extends WithState<State> {
-  readonly state: State = initialState
+export class CounterService extends Stateful<State> {
+  readonly state = initialState
 
   increment() {
     this.setState((prevState) => ({ count: prevState.count + 1 }))
@@ -74,10 +77,11 @@ export class CounterService extends WithState<State> {
 export class Counter extends Component {
   render() {
     return (
-      // we inject CounterService instance mapped to counterService key, which will be provided by closest parent Injector ( in our case we created parent <Provider/> )
-      // Now our injectables object map will be available within render prop, by the name that we mapped to `{ counterService: CounterService }` -> ({ counterService }) => (...)
-      <Inject providers={{ counterService: CounterService }}>
-        {({ counterService }) => (
+      // We request to inject CounterService instance, which will be provided by closest parent DependencyProvider(Injector) (in our case we created parent <DependencyProvider/>)
+      // ☝️ `values` prop is an tuple of Tokens(tokens used to register provider to injector)
+      // Now our injectables will be available within render prop, via positional arguments,  `[CounterService] -> ((counterService) => (...)`
+      <Inject values={[CounterService]}>
+        {(counterService) => (
           <p>
             Clicked: {counterService.state.count} times
             <button onClick={() => counterService.increment()}>+</button>
@@ -97,9 +101,9 @@ export class Counter extends Component {
 
 render(
   // We create Parent Injector via Provider component which will resolve CounterService and thus will make it available within whole app tree
-  <Provider provide={[CounterService]}>
+  <DependencyProvider providers={[CounterService]}>
     <Counter />
-  </Provider>,
+  </DependencyProvider>,
   document.getElementById('root')
 )
 ```
@@ -114,16 +118,112 @@ Go checkout [examples](./examples) !
 
 > rea-di API is tiny 👌. It starts and ends with components and javascript, 2 core things that we love React for ❤️
 
-There are 2 components for registering and injecting services and 2 HoC components which just leverage former under the hood (if that's your preferred way of composition).
+There are 2 components for registering and injecting services and 2 HoC(High order components) which just leverage former under the hood (if that's your preferred way of composition) and 1 service abstract class to make services state aware.
 
-- `<Provider provide={[ServiceOne]}>...your tree...</Provider>`
-- `withProvider({provide: [ServiceOne]})(MyParentComponent)`
-- `<Inject providers={{serviceOne:ServiceOne}}>{({serviceOne})=>...}</Inject>`
-- `withInjectables({serviceOne:ServiceOne})(MyComponentWithInjectables)`
+### DependencyProvider<{providers: Provider[], children: ReactElement}>
 
-- `WithState<T>` abstract class which implements `setState` on your service class. If you wanna handle state within your service you need to extend from this Base class and implement `state`, exactly like you would with `React.Component`
+**Example:**
+
+```tsx
+<DependencyProvider providers={[ServiceOne]}>
+  ...your tree...
+</DependencyProvider>
+```
+
+### Inject<{values: Type[], children(...injectables)=>ReactNode}>
+
+```tsx
+<Inject values={[ServiceOne]}>{(serviceOne)=>...}</Inject>
+```
+
+> **NOTE:**
+> if you need inject multiple providers you have to use `tuple` as TS won't properly infer array to strictly typed tuple:
+>
+> ```tsx
+> <Inject values={tuple(ServiceOne, ServiceTwo)}>
+>   {(serviceOne, serviceTwo) => <>...</>}
+> </Inject>
+> ```
+
+### withDependencyProvider<T extends Provider[]>(...providers:T): React.ComponentClass
+
+```tsx
+class Root extends Component {
+  /*...*/
+}
+
+const EnhancedRoot = withDependencyProvider(ServiceOne, ServiceTwo)(
+  MyParentComponent
+)
+```
+
+### `withInjectables<TokenMap extends {[propName:string]: Type}>(tokenMap): React.ComponentClass`
+
+```tsx
+// you can see that injectValuesMap is config object for withInjectables HoC,
+// which will map those keys to your component props with proper instance registered by provided Token within injector
+const injectValuesMap = { serviceOne: ServiceOne }
+
+class MyComponentWithInjectables extends Component<typeof injectValuesMap> {
+  /*...*/
+}
+
+const EnhancedComponent = withInjectables(injectValuesMap)(
+  MyComponentWithInjectables
+)
+
+const Tree = () => <EnhancedComponent />
+```
+
+### `Stateful<S>`
+
+Abstract class which implements `setState` on your service class. If you wanna handle state within your service you need to extend from this Base class and implement `state`, exactly like you would with `React.Component`
+
+```ts
+const initialState = {
+  count: 0,
+}
+
+@Injectable()
+class CounterService extends Stateful<typeof initialState> {
+  readonly state = initialState
+  inc() {
+    this.setState((prevState) => ({ count: prevState.count + 1 }))
+  }
+  dec() {
+    this.setState((prevState) => ({ count: prevState.count - 1 }))
+  }
+}
+```
+
+### `tuple<T extends any[]>(...args: T): T`
+
+- helper function to be used within `<Inject/>` if you need to inject more than 1 injectable
+
+Following will produce type errors as TypeScript will create array of unions instead of tuple type:
+
+```tsx
+<Inject values={[ServiceOne, ServiceTwo]}>
+  /* this will not compile
+    $ExpectType  (...args: Array<ServiceOne | ServiceTwo>) => ReactNode
+  */
+  {(serviceOne, serviceTwo) =<>...</>}
+</Inject>
+```
+
+By using `tuple` identity helper, everything works as expected
+
+```tsx
+<Inject values={tuple(ServiceOne, ServiceTwo)}>
+  /* $ExpectType (...args: [ServiceOne ServiceTwo]) => ReactNode */
+  {((serviceOne, serviceTwo) = <>...</>)}
+</Inject>
+```
 
 ## Guides
+
+<details>
+<summary>Building a github user search</summary>
 
 Let's build a simple github user search app, by leveraging `rea-di`.
 
@@ -175,8 +275,9 @@ Now let's wire our service with our React component tree:
 
 ```tsx
 // app.tsx
+import React, { Component } from 'react'
 import { registerHttpClientProviders } from '@martin_hotell/axios-http'
-import { Provider } from '@martin_hotell/rea-di'
+import { DependencyProvider } from '@martin_hotell/rea-di'
 
 import { Profile } from './components/profile'
 import SearchUser from './components/search-user'
@@ -187,15 +288,17 @@ export class App extends Component {
     return (
       <div>
         <h1>GitHub User Search 👀</h1>
-        <Provider
+        <DependencyProvider
           provide={[
             registerHttpClientProviders({ baseURL: 'https://api.github.com' }),
             GithubUserService,
           ]}
         >
-          <SearchUser />
-          <Profile />
-        </Provider>
+          <>
+            <SearchUser />
+            <Profile />
+          </>
+        </DependencyProvider>
       </div>
     )
   }
@@ -204,22 +307,22 @@ export class App extends Component {
 
 Quite a lot happening there, let's go step by step
 
-So we are using `<Provider>` component which has one prop, `provide`. We need to pass here all providers that we wanna make available for all descendant components on the tree from our injector.
+So we are using `<DependencyProvider>` component which has one prop, `provide`. We need to pass here all providers that we wanna make available for all descendant components on the tree from our injector.
 
 In our case we need to register 2 Providers:
 
-- registerHttpClientProviders - function provided by axios-http, which registers all internal providers and makes `HttpClient` injectable
-- GithubUserService - our injectable service class
+- `registerHttpClientProviders` - function provided by axios-http, which registers all internal providers and makes `HttpClient` injectable
+- `GithubUserService` - our injectable service class
 
 ```tsx
-<Provider
+<DependencyProvider
   provide={[
     registerHttpClientProviders({ baseURL: 'https://api.github.com' }),
     GithubUserService,
   ]}
 >
   {/*...*/}
-</Provider>
+</DependencyProvider>
 ```
 
 With that solved, we can inject service instances anywhere in our component tree via `<Inject/>` component or via `withInjectables()` High order component.
@@ -228,7 +331,7 @@ With that solved, we can inject service instances anywhere in our component tree
 
 This component will handle our search form. On submit it will call methods from `GithubUserService` instance.
 
-With that said, we need to inject `GithubUserService` to our component. We could use `<Inject>` within our render but for this case we wanna use `GithubUserService` outside `render` so HoC is a great candidate for this usecase. And of course it's gonna be "injected" via React component injection, which is nothing else than React props ✌️.
+With that said, we need to inject `GithubUserService` to our component. We could use `<Inject>` within our render but for this case we wanna use `GithubUserService` outside `render` so HoC is a great candidate for this use case. And of course it's gonna be "injected" via React component injection, which is nothing else than old good React props ✌️.
 
 ```tsx
 type Props = {
@@ -241,7 +344,7 @@ export class SearchUser extends React.Component<Props> {
 
   render() {
     return (
-      <form onSubmit={(ev) => this.handleSubmit(ev)}>
+      <form onSubmit={(ev) => this._handleSubmit(ev)}>
         <input
           type="text"
           placeholder="github username..."
@@ -253,7 +356,8 @@ export class SearchUser extends React.Component<Props> {
       </form>
     )
   }
-  private handleSubmit(ev: SyntheticEvent<HTMLFormElement>) {
+
+  _handleSubmit(ev: SyntheticEvent<HTMLFormElement>) {
     ev.preventDefault()
     const username = this.usernameRef.current!
     const btn = this.submitBtnRef.current!
@@ -279,10 +383,14 @@ export default withInjectables({ userService: GithubUserService })(SearchUser)
 
 Hmm but something is missing here right ? We wanna save our fetched data... somewhere ! we could indeed store it within parent component or even in this one, but because we're already using DI, we can make our `GithubUserService` stateful. Let's do that first!
 
-All we need to do to make injectable service stateful, is to extend it with `WithState` generic abstract class, which implements `setState` method ( the same like React.Component )
+All we need to do to make injectable service stateful, is to extend it with `Stateful` generic abstract class, which implements `setState` method (the same like React.Component)
 
 ```tsx
-// (1) we define State from implementation ( the same pattern as you're used to from React )
+// user.service.ts
+import { Injectable } from 'injection-js'
+import { Stateful } from '@martin_hotell/rea-di'
+
+// (1) we define State from implementation (the same pattern as you're used to from React)
 type State = Readonly<typeof initialState>
 const initialState = {
   username: '',
@@ -292,9 +400,9 @@ const initialState = {
 
 // (2) now we extend our class WithState<State>
 @Injectable()
-export class GithubUserService extends WithState<State> {
+export class GithubUserService extends Stateful<State> {
   // (3) we set service our state
-  readonly state: State = initialState
+  readonly state = initialState
 
   constructor(private http: HttpClient) {
     super()
@@ -319,11 +427,12 @@ export class GithubUserService extends WithState<State> {
 }
 ```
 
-With our stateful `GithubUserService` we can update `SearchUser.handleSubmit` method:
+With our stateful `GithubUserService` we can update `SearchUser._handleSubmit` method:
 
 ```tsx
-export class SearchUser extends React.Component<Props> {
-  private handleSubmit(ev: SyntheticEvent<HTMLFormElement>) {
+// search-user.tsx
+export class SearchUser extends Component<Props> {
+  _handleSubmit(ev: React.FormEvent<HTMLFormElement>) {
     ev.preventDefault()
     const username = this.usernameRef.current!
     const btn = this.submitBtnRef.current!
@@ -359,6 +468,7 @@ Now we need to implement the last part of our app. Rendering the User Profile Bi
 Our `GithubUserService` is stateful, so all we need to do is to inject it within our `Profile` component. This time we don't need to access `userService` outside `render` so using `<Inject>` is the perfect candidate for wiring up Profile with our DI tree.
 
 ```tsx
+// profile.tsx
 import { Inject } from '@martin_hotell/rea-di'
 import React, { Component } from 'react'
 
@@ -369,10 +479,10 @@ import { UserProfile } from './user-profile'
 export class Profile extends Component {
   render() {
     return (
-      // (1) we specify a key value map `{ userService: GithubUserService }` with which we're saying what property name is gonna be injected within render prop and mapped to particular Injectable
-      <Inject providers={{ userService: GithubUserService }}>
-        {({ userService }) => {
-          // (2) we got our userService, we just destructure its state
+      // (1) we specify token tuple/array `GithubUserService`, with which we're saying what instance is gonna be injected  within children function arguments
+      <Inject values={[GithubUserService]}>
+        {(userService) => {
+          // (2) we got our userService, and we use destructuring on its state
           const { username, repos, bio } = userService.state
 
           // (3) we render only when both bio and repos have been fetched and stored within our service instance
@@ -404,9 +514,11 @@ And that's it!
 
 For complete implementation/demo checkout [examples](./examples/github-user)
 
+</details>
+
 ---
 
-### Handling state within services
+### State management within service layer
 
 For developers with Angular background, storing state within Service is a must have. While that makes sense in Angular ( because handling state within Angular component is a mess ) in React this abstraction isn't needed that much as React component state is mostly sufficient for that purpose.
 
@@ -418,7 +530,7 @@ Ok let's look at our previous example. We handle users array state within `Users
 
 ```tsx
 // app/services.ts
-import { WithState } from 'rea-di'
+import { Stateful } from 'rea-di'
 
 // (1) we define State type and initialState which needs to be implemented when we extend WithState
 type State = typeof Readonly<initialState>
@@ -428,7 +540,7 @@ const initialState = {
 
 @Injectable()
 // (2) WithState<T> is a generic base class which provides `protected setState()` method and forces you to implement state within your service
-export class UserService extends WithState<State> {
+export class UserService extends Stateful<State> {
   // constructor Injection
   constructor(private httpClient: HttpClient, private logger: Logger) {
     // (3) we need to call super() as we are extending BaseClass
@@ -450,7 +562,7 @@ export class UserService extends WithState<State> {
 }
 ```
 
-With that implemented, we can update our `Users` component ( remove state handling from it )
+With that implemented, we can update our `Users` component ( emove state handling from it)
 
 ```tsx
 // app/users.tsx
@@ -478,7 +590,7 @@ class Users extends Component<Props> {
 }
 ```
 
-### How to write tests?
+### Writing tests
 
 Testing belongs to one of the main areas where DI framework shines!
 
@@ -487,7 +599,7 @@ How to test our components with rea-di ?
 You just provide mocks of your services for both unit and integration tests and you're good to go 👌. Old good React ❤️
 
 ```tsx
-import { Provide } from 'rea-di'
+import { DependencyProvider } from 'rea-di'
 
 const DATA: Users[] = [{ name: 'Martin' }, { name: 'John' }]
 
@@ -510,9 +622,11 @@ describe('<UsersModule/> Integration Test', () => {
   it('should fetch users and render them', () => {
     const wrapper = mount(
       // we create new ChildInjector with same token, just changing the Implementation that's gonna be instantiated ;)
-      <Provider provide={[{ provide: UserService, useClass: UserServiceMock }]}>
+      <DependencyProvider
+        providers={[{ provide: UserService, useClass: UserServiceMock }]}
+      >
         <UserModule />
-      </Provider>
+      </DependencyProvider>
     )
 
     expect(service.getUsers).toHaveBeenCalled()

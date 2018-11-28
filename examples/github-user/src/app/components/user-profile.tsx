@@ -1,4 +1,5 @@
 import { Component, createElement } from 'react'
+
 import { GithubUser } from '../user.model'
 
 type Props = { username: string; bio: GithubUser }

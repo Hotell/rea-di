@@ -1,6 +1,6 @@
 import { registerHttpClientProviders } from '@martin_hotell/axios-http'
-import { Provider } from '@martin_hotell/rea-di'
-import { Component, createElement } from 'react'
+import { DependencyProvider } from '@martin_hotell/rea-di'
+import { Component, createElement, Fragment } from 'react'
 
 import { Profile } from './components/profile'
 import SearchUser from './components/search-user'
@@ -11,15 +11,17 @@ export class App extends Component {
     return (
       <div className="row flex-center">
         <h1>GitHub User Search 👀</h1>
-        <Provider
-          provide={[
+        <DependencyProvider
+          providers={[
             registerHttpClientProviders({ baseURL: 'https://api.github.com' }),
             GithubUserService,
           ]}
         >
-          <SearchUser />
-          <Profile />
-        </Provider>
+          <Fragment>
+            <SearchUser />
+            <Profile />
+          </Fragment>
+        </DependencyProvider>
       </div>
     )
   }

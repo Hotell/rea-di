@@ -1,12 +1,12 @@
+import { Stateful } from '@martin_hotell/rea-di'
 import { Injectable } from 'injection-js'
-import { WithState } from '@martin_hotell/rea-di'
 
 type State = Readonly<typeof initialState>
 const initialState = {
   messages: [] as string[],
 }
 @Injectable()
-export class MessageService extends WithState<State> {
+export class MessageService extends Stateful<State> {
   readonly state = initialState
 
   add(message: string) {

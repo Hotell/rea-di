@@ -9,32 +9,26 @@
     ],
     "strict": true,
     "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
     "suppressImplicitAnyIndexErrors": true,
     "forceConsistentCasingInFileNames": true,
     "jsx": "react",
-    // change this to any hyperscript like function that you're using
-    "jsxFactory": "React.createElement",
     "sourceMap": true,
     "outDir": "dist/esm5",
     "declaration": true,
     "declarationDir": "dist/types",
     "declarationMap": true,
     "stripInternal": true,
-    "resolveJsonModule": true,
     "importHelpers": true,
     "experimentalDecorators": true,
-    "emitDecoratorMetadata": true
+    "emitDecoratorMetadata": true,
+    "resolveJsonModule": true
   },
   "include": [
     "./src"
   ],
   "exclude": [
     "node_modules",
-    "dist",
-    // "__tests__",
-    // "**/*.spec.ts",
-    // "**/*.test.ts"
+    "dist"
   ],
   "compileOnSave": false,
   "buildOnSave": false
