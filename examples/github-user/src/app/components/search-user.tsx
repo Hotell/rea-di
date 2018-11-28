@@ -36,7 +36,7 @@ export class SearchUser extends Component<Props> {
       </div>
     )
   }
-  private handleSubmit(ev: import('react').SyntheticEvent<HTMLFormElement>) {
+  private handleSubmit(ev: import('react').FormEvent<HTMLFormElement>) {
     ev.preventDefault()
     const username = this.usernameRef.current!
     const btn = this.submitBtnRef.current!
