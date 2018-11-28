@@ -122,7 +122,6 @@
     "tslint-react": "3.6.0",
     "typedoc": "0.13.0",
     "typescript": "3.1.6",
-    "validate-commit-msg": "2.14.0",
     "webpack-config-utils": "2.3.1"
   }
 }
