@@ -8,8 +8,8 @@ import { UserProfile } from './user-profile'
 export class Profile extends Component {
   render() {
     return (
-      <Inject providers={{ userService: GithubUserService }}>
-        {({ userService }) => {
+      <Inject values={[GithubUserService]}>
+        {(userService) => {
           const { username, repos, bio } = userService.state
 
           if (bio && repos) {

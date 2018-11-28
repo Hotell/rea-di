@@ -5,23 +5,23 @@
   "author": "Martin Hochel <hochelmartin@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "start": "parcel --no-cache src/index.html",
+    "start": "parcel ./src/index.html",
     "build": "rm -rf dist && parcel build src/index.html"
   },
   "dependencies": {
-    "@abraham/reflection": "0.3.0",
-    "@martin_hotell/rea-di": "0.1.0",
+    "@abraham/reflection": "0.4.2",
+    "@martin_hotell/rea-di": "../../dist/",
     "core-js": "2.5.7",
     "injection-js": "2.2.1",
-    "papercss": "1.5.1",
+    "papercss": "1.6.0",
     "react": "16.4.1",
     "react-dom": "16.4.1",
     "tslib": "1.9.3"
   },
   "devDependencies": {
-    "typescript": "2.9.2",
-    "@types/react": "16.4.6",
-    "@types/react-dom": "16.0.6",
-    "parcel-bundler": "1.9.7"
+    "@types/react": "16.7.7",
+    "@types/react-dom": "16.0.11",
+    "parcel-bundler": "1.10.3",
+    "typescript": "3.1.6"
   }
 }

@@ -1,5 +1,5 @@
+import { Stateful } from '@martin_hotell/rea-di'
 import { Injectable } from 'injection-js'
-import { WithState } from '@martin_hotell/rea-di'
 
 import { Logger } from './logger.service'
 
@@ -9,7 +9,7 @@ const initialState = {
 }
 
 @Injectable()
-export class CounterService extends WithState<State> {
+export class CounterService extends Stateful<State> {
   readonly state = initialState
 
   constructor(private logger: Logger) {
@@ -33,8 +33,10 @@ export class CounterService extends WithState<State> {
     )
   }
   incrementIfOdd() {
-    if (this.state.count % 2 !== 0) {
+    const ODD_NUMBER = 2
+    if (this.state.count % ODD_NUMBER !== 0) {
       this.onIncrement()
+
       return
     }
 
@@ -44,7 +46,8 @@ export class CounterService extends WithState<State> {
   }
 
   incrementAsync() {
+    const DELAY = 1000
     this.logger.warn(`CounterService: I'll increment state after 1 second !`)
-    setTimeout(() => this.onIncrement(), 1000)
+    setTimeout(() => this.onIncrement(), DELAY)
   }
 }

@@ -1,6 +1,7 @@
 // tslint:disable:jsx-no-lambda
 import { withInjectables } from '@martin_hotell/rea-di'
 import { Component, createElement, createRef } from 'react'
+
 import { GithubUserService } from '../user.service'
 
 type Props = {

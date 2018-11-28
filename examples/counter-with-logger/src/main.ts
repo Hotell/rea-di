@@ -1,7 +1,7 @@
-import 'papercss/dist/paper.css'
-
 import { createElement } from 'react'
 import { render } from 'react-dom'
+
+import './styles.css'
 
 import { App } from './app/app'
 

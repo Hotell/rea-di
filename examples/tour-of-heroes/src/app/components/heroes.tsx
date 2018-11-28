@@ -1,12 +1,13 @@
-import React, { Component, SyntheticEvent, createRef } from 'react'
+// tslint:disable:jsx-no-lambda
+import React, { Component, createRef } from 'react'
 import { Link } from 'react-router-dom'
 
 import { Hero } from '../hero'
 import { uppercase } from '../shared'
 
-import './heroes.css'
-import { HeroDetail } from './hero-detail'
 import { HeroService } from '../hero.service'
+import { HeroDetail } from './hero-detail'
+import './heroes.css'
 
 type Props = {
   heroService: HeroService
@@ -23,6 +24,7 @@ export class Heroes extends Component<Props, State> {
 
   render() {
     const { heroes } = this.state
+
     return (
       <>
         <h2>My Heroes</h2>

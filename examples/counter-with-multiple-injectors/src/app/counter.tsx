@@ -9,8 +9,8 @@ type Props = {}
 export class Counter extends Component<Props> {
   render() {
     return (
-      <Inject providers={{ counterService: CounterService }}>
-        {({ counterService }) => (
+      <Inject values={[CounterService]}>
+        {(counterService) => (
           <Fragment>
             <p>
               Clicked: {counterService.value} times{' '}

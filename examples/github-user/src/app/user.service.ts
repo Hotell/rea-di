@@ -1,7 +1,7 @@
 import { HttpClient } from '@martin_hotell/axios-http'
 import { Injectable } from 'injection-js'
 
-import { WithState } from '@martin_hotell/rea-di'
+import { Stateful } from '@martin_hotell/rea-di'
 import { GithubUserRepo } from './repo.model'
 import { GithubUser } from './user.model'
 
@@ -15,7 +15,7 @@ const initialState = {
 }
 
 @Injectable()
-export class GithubUserService extends WithState<State> {
+export class GithubUserService extends Stateful<State> {
   readonly state: State = initialState
   constructor(private http: HttpClient) {
     super()

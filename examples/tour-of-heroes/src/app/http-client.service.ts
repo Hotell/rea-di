@@ -2,7 +2,6 @@ import axios, {
   AxiosInstance,
   AxiosInterceptorManager,
   AxiosPromise,
-  AxiosProxyConfig,
   AxiosRequestConfig,
   AxiosResponse,
 } from 'axios'

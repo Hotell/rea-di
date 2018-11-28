@@ -1,4 +1,4 @@
-import { Provider } from '@martin_hotell/rea-di'
+import { DependencyProvider } from '@martin_hotell/rea-di'
 import { Component, createElement } from 'react'
 
 import { Counter } from './counter'
@@ -9,9 +9,9 @@ export class App extends Component {
     return (
       <div className="app">
         <h1>Counter app</h1>
-        <Provider provide={[CounterService]}>
+        <DependencyProvider providers={[CounterService]}>
           <Counter />
-        </Provider>
+        </DependencyProvider>
       </div>
     )
   }
