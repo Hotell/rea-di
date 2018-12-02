@@ -1,4 +1,7 @@
+import { defineMetadata } from '@abraham/reflection'
 import { ComponentType } from 'react'
+
+import { Constructor } from './types'
 
 export const getComponentDisplayName = <P>(Component: ComponentType<P>) =>
   Component.displayName ||
@@ -18,3 +21,11 @@ export const createHOCName = <P>(
 export const noop = () => {}
 
 export const tuple = <T extends any[]>(...args: T): T => args
+
+export const metadataKey = '__metadata__'
+export const optional = <T extends Constructor>(token: T) => {
+  const withOptionalIdentity = () => token
+  defineMetadata(metadataKey, { optional: true } as any, withOptionalIdentity)
+
+  return (withOptionalIdentity as any) as T | null
+}

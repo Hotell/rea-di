@@ -4,8 +4,8 @@
 import { mount } from 'enzyme'
 import React, { Component } from 'react'
 
-import { ReflectiveInjector } from 'injection-js'
-import { noop } from '../helpers'
+import { Injectable, Optional, ReflectiveInjector } from 'injection-js'
+import { noop, optional } from '../helpers'
 import { withInjectables } from '../with-injectables'
 import { withDependencyProvider } from '../with-provider'
 import { Counter } from './setup/components'
@@ -108,5 +108,46 @@ describe('Hoc wrappers', () => {
       'WithDependencyProvider(CounterModule)'
     )
     expect(CounterEnhanced.displayName).toBe('WithInjectables(Counter)')
+  })
+
+  describe(`@Optional/optional()`, () => {
+    @Injectable()
+    class Engine {
+      type?: string
+    }
+
+    @Injectable()
+    class Car {
+      engine: Engine | null
+      constructor(@Optional() engine: Engine) {
+        this.engine = engine ? engine : null
+      }
+    }
+    const InjectConsumer = (props: { car: Car; engine: Engine | null }) => {
+      return <pre>{JSON.stringify(props)}</pre>
+    }
+
+    const InjectConsumerEnhanced = withInjectables({
+      car: Car,
+      engine: optional(Engine),
+    })(InjectConsumer)
+
+    it(`should properly resolve optional injection on component level`, () => {
+      const Test = withDependencyProvider(Car)(() => {
+        return (
+          <main>
+            <InjectConsumerEnhanced />
+          </main>
+        )
+      })
+
+      expect(() => mount(<Test />)).not.toThrow()
+
+      const tree = mount(<Test />)
+
+      expect(tree.text()).toEqual(`{"car":{"engine":null},"engine":null}`)
+      expect(tree.find(InjectConsumer).prop('car').engine).toBe(null)
+      expect(tree.find(InjectConsumer).prop('engine')).toBe(null)
+    })
   })
 })

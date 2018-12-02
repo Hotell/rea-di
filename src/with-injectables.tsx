@@ -3,7 +3,7 @@ import React, { Component, ComponentType } from 'react'
 import { Type } from 'injection-js'
 import { createHOCName } from './helpers'
 import { Inject } from './inject'
-import { HoC, InstanceTypes, Subtract, TypeMap } from './types'
+import { HoC, NullableInstanceTypes, NullableTypeMap, Subtract } from './types'
 
 /**
  * If you need to access injected service instances outside of render, you can use this high order component.
@@ -12,10 +12,10 @@ import { HoC, InstanceTypes, Subtract, TypeMap } from './types'
  *
  * @param tokenMap - provider instances from injector to be mapped to wrapped component props
  */
-export const withInjectables = <TokenMap extends TypeMap>(
+export const withInjectables = <TokenMap extends NullableTypeMap>(
   tokenMap: TokenMap
 ) => <
-  OriginalProps extends InstanceTypes<TokenMap>,
+  OriginalProps extends NullableInstanceTypes<TokenMap>,
   ResolvedProps = Subtract<OriginalProps, TokenMap>
 >(
   Cmp: ComponentType<OriginalProps>
@@ -27,20 +27,27 @@ export const withInjectables = <TokenMap extends TypeMap>(
     static displayName: string = createHOCName(WithInjectables, Cmp)
     static readonly WrappedComponent = Cmp
 
+    /**
+     *
+     * @param providersMap - map config (key to Class type)
+     * @param propsKeys - array of mapped keys
+     * @param injectables - injectables are nullable tuples
+     */
     private injectTokensMap(
       providersMap: TokenMap,
       propsKeys: Array<keyof TokenMap>,
-      injectables: InstanceTypes<Type<any>[]>
+      injectables: NullableInstanceTypes<Array<Type<any>>>
     ) {
       const injectProps = propsKeys.reduce((acc, nextPropKey) => {
-        const token = providersMap[nextPropKey]
+        // token is always present. We just trick TS to always be an Nullable type to get proper inference within children
+        const token = providersMap[nextPropKey] as Type<any>
         const injectable =
-          injectables.find((injectableInstance) => {
-            return injectableInstance instanceof token
-          }) || null
+          injectables.find(
+            (injectableInstance) => injectableInstance instanceof token
+          ) || null
 
         return { ...acc, [nextPropKey]: injectable }
-      }, {}) as InstanceTypes<TokenMap>
+      }, {}) as NullableInstanceTypes<TokenMap>
 
       return injectProps
     }

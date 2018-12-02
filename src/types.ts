@@ -6,6 +6,11 @@ export type StateCallback<T = {}> = (state: T) => Partial<T>
 export type TypeMap<
   T extends { [key: string]: Type<any> } = { [key: string]: Type<any> }
 > = { [K in keyof T]: T[K] }
+export type NullableTypeMap<
+  T extends { [key: string]: Type<any> | null } = {
+    [key: string]: Type<any> | null
+  }
+> = { [K in keyof T]: T[K] | null }
 
 export type StringMap<T> = { [key: string]: T }
 
@@ -21,7 +26,15 @@ export type HoC<
 }
 
 export type InstanceTypes<T> = {
-  [P in keyof T]: T[P] extends Constructor<infer U> ? U : never
+  [P in keyof T]: T[P] extends Constructor<infer U> ? U : any
+}
+
+export type NullableInstanceTypes<T> = {
+  [P in keyof T]: T[P] extends Constructor<infer U>
+    ? U
+    : T[P] extends Constructor<infer I> | null
+    ? I | null
+    : any
 }
 
 export type Constructor<T = {}> = new (...args: any[]) => T
