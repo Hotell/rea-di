@@ -3,9 +3,10 @@
 // tslint:disable:no-shadowed-variable
 import React, { Component } from 'react'
 
+import { getMetadata } from '@abraham/reflection'
 import { mount } from 'enzyme'
 import { Injectable, Optional } from 'injection-js'
-import { noop, tuple } from '../helpers'
+import { metadataKey, noop, optional, tuple } from '../helpers'
 import { Inject } from '../inject'
 import { DependencyProvider } from '../provider'
 import { Counter } from './setup/components'
@@ -179,9 +180,11 @@ describe(`Provide/Inject`, () => {
     expect(childLoggerInstance.log).toHaveBeenLastCalledWith('from child')
   })
 
-  it(`should properly resolve @Optional injection`, () => {
+  describe(`@Optional/optional()`, () => {
     @Injectable()
-    class Engine {}
+    class Engine {
+      type?: string
+    }
 
     @Injectable()
     class Car {
@@ -196,41 +199,89 @@ describe(`Provide/Inject`, () => {
       constructor(public engine: Engine) {}
     }
 
-    const InjectConsumer = (props: { car: Car }) => {
-      return <div>{JSON.stringify(props.car)}</div>
-    }
+    it(`should add metadata only once via wrapper`, () => {
+      expect(getMetadata(metadataKey, Engine)).toEqual(undefined)
 
-    const App = () => {
-      return (
-        <DependencyProvider providers={[Car]}>
-          <Inject values={[Car]}>
-            {(car) => {
-              return <InjectConsumer car={car} />
-            }}
-          </Inject>
-        </DependencyProvider>
+      const DecoratedEngine = optional(Engine)
+      const OriginalEngine = ((DecoratedEngine as any) as () => typeof Engine)()
+
+      expect(getMetadata(metadataKey, DecoratedEngine!)).toEqual({
+        optional: true,
+      })
+      expect(getMetadata(metadataKey, Engine)).toEqual(undefined)
+      expect(getMetadata(metadataKey, OriginalEngine)).toEqual(undefined)
+      expect(OriginalEngine).toBe(Engine)
+    })
+
+    it(`should properly resolve optional injection on component level`, () => {
+      const InjectConsumer = (props: { car: Car }) => {
+        return <div>{JSON.stringify(props.car)}</div>
+      }
+
+      const App = () => {
+        return (
+          <DependencyProvider providers={[Car]}>
+            <Inject values={tuple(Car, optional(Engine))}>
+              {(
+                car /*$ExpectType Car*/,
+                engine /* $ExpectType Engine | null*/
+              ) => {
+                return (
+                  <div>
+                    <pre>{JSON.stringify(engine)}</pre>
+                    <InjectConsumer car={car} />
+                  </div>
+                )
+              }}
+            </Inject>
+          </DependencyProvider>
+        )
+      }
+
+      expect(() => mount(<App />)).not.toThrow()
+
+      const tree = mount(<App />)
+      expect(tree.find('pre').text()).toEqual(`null`)
+      expect(tree.find(InjectConsumer).prop('car').engine).toBe(null)
+    })
+
+    it(`should properly resolve @Optional injection`, () => {
+      const InjectConsumer = (props: { car: Car }) => {
+        return <div>{JSON.stringify(props.car)}</div>
+      }
+
+      const App = () => {
+        return (
+          <DependencyProvider providers={[Car]}>
+            <Inject values={[Car]}>
+              {(car) => {
+                return <InjectConsumer car={car} />
+              }}
+            </Inject>
+          </DependencyProvider>
+        )
+      }
+
+      const tree = mount(<App />)
+
+      expect(tree.text()).toEqual(`{"engine":null}`)
+      expect(tree.find(InjectConsumer).prop('car').engine).toBe(null)
+
+      function willThrow() {
+        const App = () => (
+          <DependencyProvider providers={[CarWillCrashWithoutEngine]}>
+            <Inject values={[CarWillCrashWithoutEngine]}>
+              {(_) => JSON.stringify(_)}
+            </Inject>
+          </DependencyProvider>
+        )
+
+        mount(<App />)
+      }
+
+      expect(willThrow).toThrow(
+        'No provider for Engine! (CarWillCrashWithoutEngine -> Engine)'
       )
-    }
-
-    const tree = mount(<App />)
-
-    expect(tree.text()).toEqual(`{"engine":null}`)
-    expect(tree.find(InjectConsumer).prop('car').engine).toBe(null)
-
-    function willThrow() {
-      const App = () => (
-        <DependencyProvider providers={[CarWillCrashWithoutEngine]}>
-          <Inject values={[CarWillCrashWithoutEngine]}>
-            {(_) => JSON.stringify(_)}
-          </Inject>
-        </DependencyProvider>
-      )
-
-      mount(<App />)
-    }
-
-    expect(willThrow).toThrow(
-      'No provider for Engine! (CarWillCrashWithoutEngine -> Engine)'
-    )
+    })
   })
 })

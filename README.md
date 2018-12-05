@@ -204,10 +204,11 @@ Following will produce type errors as TypeScript will create array of unions ins
 
 ```tsx
 <Inject values={[ServiceOne, ServiceTwo]}>
-  /* this will not compile
-    $ExpectType  (...args: Array<ServiceOne | ServiceTwo>) => ReactNode
-  */
-  {(serviceOne, serviceTwo) =<>...</>}
+  {/* TS Error */}
+  {(
+    serviceOne /* $ExpectType ServiceOne | ServiceTwo */,
+    serviceTwo /* $ExpectType ServiceTwo | ServiceTwo */
+  ) => <>...</>}
 </Inject>
 ```
 
@@ -215,10 +216,32 @@ By using `tuple` identity helper, everything works as expected
 
 ```tsx
 <Inject values={tuple(ServiceOne, ServiceTwo)}>
-  /* $ExpectType (...args: [ServiceOne ServiceTwo]) => ReactNode */
-  {((serviceOne, serviceTwo) = <>...</>)}
+  {(
+    serviceOne /* $ExpectType ServiceOne */,
+    serviceTwo /* $ExpectType ServiceTwo */
+  ) => <>...</>}
 </Inject>
 ```
+
+### `optional<T extends Type>(Token: T): T | null`
+
+- like `@Optional` but for component level injection
+
+Marks token as injectable so if it provider with current token will not be registered on component tree it will not throw but return `null`
+
+```tsx
+<Inject values={tuple(ServiceOne, optional(ServiceTwo))}>
+  {(
+    serviceOne /* $ExpectType ServiceOne */,
+    serviceTwo /* $ExpectType: ServiceTwo | null */
+  ) => <>...</>}
+</Inject>
+```
+
+> **NOTE:**
+>
+> don't try to do anything tricky with this. Under the hood original token is being wrapped within an identity function that gets metadata via Reflect.API so we can properly resolve injection without trowing any errors. We just trick type-system to get proper DX and inference for consumer
+> 👉 `expect(optional(ServiceTwo)).toEqual(()=>ServiceTwo)`
 
 ## Guides
 
