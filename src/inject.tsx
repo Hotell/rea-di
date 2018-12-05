@@ -1,7 +1,7 @@
-import { getMetadata } from '@abraham/reflection'
 import React, { Component, ReactNode } from 'react'
 
 import { Context, ContextApi } from './context'
+import { reflection } from './facade/lang'
 import { metadataKey } from './helpers'
 import { Constructor, NullableInstanceTypes } from './types'
 
@@ -19,9 +19,10 @@ export class Inject<T extends Array<Constructor | null>> extends Component<
         return null
       }
 
-      const annotationsMeta = getMetadata(metadataKey, nextInjectableRef) as
-        | undefined
-        | { optional: boolean }
+      const annotationsMeta = reflection.getMetadata(
+        metadataKey,
+        nextInjectableRef
+      ) as undefined | { optional: boolean }
 
       if (!annotationsMeta) {
         return injector.get(nextInjectableRef)

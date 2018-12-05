@@ -2,7 +2,7 @@
 # yarn lockfile v1
 
 
-"@abraham/reflection@0.4.2":
+"@abraham/reflection@>=0.4.2":
   version "0.4.2"
   resolved "https://registry.yarnpkg.com/@abraham/reflection/-/reflection-0.4.2.tgz#c2b292325986cdcb07ae95cca1a4215650974872"
   integrity sha512-nTrx2TCCoVYRMurO5VKLxSkjEKmj6OB1ktQ9xxJehop65bAAVVgP/WbIbAgMr6w/pPfvFxQu4GE6HI/HjMDDXw==
@@ -5652,6 +5652,11 @@ redent@^2.0.0:
   dependencies:
     indent-string "^3.0.0"
     strip-indent "^2.0.0"
+
+reflect-metadata@0.1.12:
+  version "0.1.12"
+  resolved "https://registry.yarnpkg.com/reflect-metadata/-/reflect-metadata-0.1.12.tgz#311bf0c6b63cd782f228a81abe146a2bfa9c56f2"
+  integrity sha512-n+IyV+nGz3+0q3/Yf1ra12KpCyi001bi4XFxSjbiWWjfqb52iTTtpGXmCCAOWWIAn9KEuFZKGqBERHmrtScZ3A==
 
 regenerate@^1.2.1:
   version "1.4.0"

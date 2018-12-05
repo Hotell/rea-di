@@ -1,6 +1,6 @@
-import { defineMetadata } from '@abraham/reflection'
 import { ComponentType } from 'react'
 
+import { reflection } from './facade/lang'
 import { Constructor } from './types'
 
 export const getComponentDisplayName = <P>(Component: ComponentType<P>) =>
@@ -25,7 +25,11 @@ export const tuple = <T extends any[]>(...args: T): T => args
 export const metadataKey = '__metadata__'
 export const optional = <T extends Constructor>(token: T) => {
   const withOptionalIdentity = () => token
-  defineMetadata(metadataKey, { optional: true } as any, withOptionalIdentity)
+  reflection.defineMetadata(
+    metadataKey,
+    { optional: true },
+    withOptionalIdentity
+  )
 
   return (withOptionalIdentity as any) as T | null
 }
