@@ -1,6 +1,6 @@
 import { Injectable } from 'injection-js'
 
-import { Stateful } from '../../stateful'
+import { Stateful } from '../../services/stateful'
 
 @Injectable()
 export class Logger {

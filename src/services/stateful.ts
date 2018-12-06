@@ -1,4 +1,4 @@
-import { StateCallback } from './types'
+import { StateCallback } from '../types'
 
 export abstract class Stateful<T extends object> {
   protected abstract state: null | Readonly<T> = null
