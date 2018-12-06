@@ -130,6 +130,10 @@ There are 2 components for registering and injecting services and 2 HoC(High ord
 </DependencyProvider>
 ```
 
+#### DependencyProvider.enableDebugMode(): void
+
+- renders injector tree with registered providers in your view
+
 ### Inject<{values: Type[], children(...injectables)=>ReactNode}>
 
 ```tsx
