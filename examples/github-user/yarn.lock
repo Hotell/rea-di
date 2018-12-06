@@ -639,8 +639,10 @@
   resolved "https://registry.yarnpkg.com/@martin_hotell/axios-http/-/axios-http-0.3.1.tgz#6ae9ea518b369f13200bc3867bdebfa6098b1881"
   integrity sha512-bij1nQm6QYKtD6MKwaJlVg1ScYfqxzp6uhr5TFMMK6QGExh+zzTwVIXv/662j62jZh9EjlADB4hV1cfcpTINhA==
 
-"@martin_hotell/rea-di@../../dist/":
-  version "0.2.0"
+"@martin_hotell/rea-di@1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@martin_hotell/rea-di/-/rea-di-1.0.0.tgz#3a3838165942607b9366fbcc40149ccfeb3c0ab3"
+  integrity sha512-XXtBvdvxEjWUXbhJTxVTG0+TPGksrQKq3W0ODULhJVMJPy76j6d+SnbpZ6ZlxvY9fmJ5dXAJqMbdvcNBsR42HA==
 
 "@mrmlnc/readdir-enhanced@^2.2.1":
   version "2.2.1"

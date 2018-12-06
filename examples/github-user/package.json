@@ -11,7 +11,7 @@
   "dependencies": {
     "@abraham/reflection": "0.4.2",
     "@martin_hotell/axios-http": "0.3.1",
-    "@martin_hotell/rea-di": "../../dist/",
+    "@martin_hotell/rea-di": "1.0.0",
     "axios": "0.18.0",
     "core-js": "2.5.7",
     "injection-js": "2.2.1",
