@@ -5,11 +5,11 @@ import { mount } from 'enzyme'
 import React, { Component } from 'react'
 
 import { Injectable, Optional, ReflectiveInjector } from 'injection-js'
-import { noop, optional } from '../helpers'
-import { withInjectables } from '../with-injectables'
-import { withDependencyProvider } from '../with-provider'
-import { Counter } from './setup/components'
-import { CounterService, Logger } from './setup/services'
+import { withInjectables } from '../../components/inject.hoc'
+import { withDependencyProvider } from '../../components/provider.hoc'
+import { noop, optional } from '../../utils/helpers'
+import { Counter } from '../setup/components'
+import { CounterService, Logger } from '../setup/services'
 
 class CounterModule extends Component<{ title: string }> {
   render() {

@@ -5,11 +5,11 @@ import {
   isObject,
   isProvider,
   isType,
-} from '../guards'
+} from '../../utils/guards'
 
 // tslint:disable:no-magic-numbers
 
-jest.mock('../environment.ts', () => ({
+jest.mock('../../environment.ts', () => ({
   IS_DEV: true,
   IS_PROD: false,
 }))

@@ -1,9 +1,9 @@
 import React, { Component, ComponentType } from 'react'
 
 import { Type } from 'injection-js'
-import { createHOCName } from './helpers'
+import { HoC, NullableInstanceTypes, NullableTypeMap, Subtract } from '../types'
+import { createHOCName } from '../utils/helpers'
 import { Inject } from './inject'
-import { HoC, NullableInstanceTypes, NullableTypeMap, Subtract } from './types'
 
 /**
  * If you need to access injected service instances outside of render, you can use this high order component.

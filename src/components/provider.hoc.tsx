@@ -1,8 +1,8 @@
 import React, { Component, ComponentType } from 'react'
 
-import { createHOCName } from './helpers'
+import { HoC, Subtract } from '../types'
+import { createHOCName } from '../utils/helpers'
 import { DependencyProvider } from './provider'
-import { HoC, Subtract } from './types'
 
 type ProvidersSetup = DependencyProvider['props']['providers']
 

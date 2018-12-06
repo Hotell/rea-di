@@ -1,9 +1,9 @@
 import React, { Component, ReactNode } from 'react'
 
-import { Context, ContextApi } from './context'
-import { reflection } from './facade/lang'
-import { metadataKey } from './helpers'
-import { Constructor, NullableInstanceTypes } from './types'
+import { reflection } from '../facade/lang'
+import { Context, ContextApi } from '../services/injector-context'
+import { Constructor, NullableInstanceTypes } from '../types'
+import { metadataKey } from '../utils/helpers'
 
 type InjectProps<C extends Array<Constructor | null>> = {
   values: C

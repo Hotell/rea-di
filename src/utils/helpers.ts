@@ -1,7 +1,7 @@
 import { ComponentType } from 'react'
 
-import { reflection } from './facade/lang'
-import { Constructor } from './types'
+import { reflection } from '../facade/lang'
+import { Constructor } from '../types'
 
 export const getComponentDisplayName = <P>(Component: ComponentType<P>) =>
   Component.displayName ||

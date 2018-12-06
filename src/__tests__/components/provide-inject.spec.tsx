@@ -6,12 +6,12 @@ import React, { Component } from 'react'
 import { getMetadata } from '@abraham/reflection'
 import { mount } from 'enzyme'
 import { Injectable, Optional } from 'injection-js'
-import { metadataKey, noop, optional, tuple } from '../helpers'
-import { Inject } from '../inject'
-import { DependencyProvider } from '../provider'
-import { Counter } from './setup/components'
-import { CounterService, Logger } from './setup/services'
-import { select } from './setup/utils'
+import { Inject } from '../../components/inject'
+import { DependencyProvider } from '../../components/provider'
+import { metadataKey, noop, optional, tuple } from '../../utils/helpers'
+import { Counter } from '../setup/components'
+import { CounterService, Logger } from '../setup/services'
+import { select } from '../setup/utils'
 
 class CounterModule extends Component<{ title: string }> {
   render() {

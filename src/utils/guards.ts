@@ -1,6 +1,6 @@
 import { Provider, Type, TypeProvider } from 'injection-js'
 
-import { Nullable } from './types'
+import { Nullable } from '../types'
 
 export const isBlank = <T>(value: T): value is Nullable<T> => value == null
 
