@@ -120,7 +120,7 @@ Go checkout [examples](./examples) !
 
 There are 2 components for registering and injecting services and 2 HoC(High order components) which just leverage former under the hood (if that's your preferred way of composition) and 1 service abstract class to make services state aware.
 
-### DependencyProvider<{providers: Provider[], children: ReactElement}>
+### `DependencyProvider<{providers: Provider[], children: ReactElement}>`
 
 **Example:**
 
@@ -130,11 +130,11 @@ There are 2 components for registering and injecting services and 2 HoC(High ord
 </DependencyProvider>
 ```
 
-#### DependencyProvider.enableDebugMode(): void
+#### `DependencyProvider.enableDebugMode(): void`
 
 - renders injector tree with registered providers in your view
 
-### Inject<{values: Type[], children(...injectables)=>ReactNode}>
+### `Inject<{values: Type[], children(...injectables)=>ReactNode}>`
 
 ```tsx
 <Inject values={[ServiceOne]}>{(serviceOne)=>...}</Inject>
@@ -149,7 +149,7 @@ There are 2 components for registering and injecting services and 2 HoC(High ord
 > </Inject>
 > ```
 
-### withDependencyProvider<T extends Provider[]>(...providers:T): React.ComponentClass
+### `withDependencyProvider<T extends Provider[]>(...providers:T): React.ComponentClass`
 
 ```tsx
 class Root extends Component {
