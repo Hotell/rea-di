@@ -2,6 +2,28 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="1.0.0"></a>
+
+# [1.0.0](https://github.com/Hotell/rea-di/compare/v0.2.0...v1.0.0) (2018-12-06)
+
+### Features
+
+- **api:** use tuples for injection on both Provider and Inject ([#9](https://github.com/Hotell/rea-di/issues/9)) ([6364f80](https://github.com/Hotell/rea-di/commit/6364f80))
+- **inject:** implement optional ([#10](https://github.com/Hotell/rea-di/issues/10)) ([7060c65](https://github.com/Hotell/rea-di/commit/7060c65)), closes [#8](https://github.com/Hotell/rea-di/issues/8)
+
+### BREAKING CHANGES
+
+- **api:** - Previously providers registration used dictionary as well as Inject. Now both
+  components (DependencyProvider, Inject) use arrays to both register providers as well as inject instances via token.
+
+* New minimal required TS version is 3.1
+* renamed:
+  - Provide -> DependencyProvider
+  - withProvider -> withDependencyProvider
+* Provider used previously `provider` prop -> `providers`
+* Inject used previously `providers` prop -> `values`
+* withDependencyProviders accepts n-ary arguments
+
 <a name="0.2.0"></a>
 
 # [0.2.0](https://www.github.com/Hotell/rea-di/compare/v0.1.0...v0.2.0) (2018-07-27)

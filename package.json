@@ -1,6 +1,6 @@
 {
   "name": "@martin_hotell/rea-di",
-  "version": "0.2.0",
+  "version": "1.0.0",
   "description": "Dependency injection for React done right. Hierarchical injection on both component and service layer powered by injection-js (Angular DI framework)",
   "main": "./bundles/index.umd.js",
   "module": "./esm5/index.js",
