@@ -4,6 +4,10 @@
 >
 > rea-di [pronounced "Ready" 🤙]
 
+> **Enjoying/Using rea-di ? 💪✅**
+>
+> <div align="center"><a href="https://paypal.me/martinhochel">Buy me a ☕️<br/><img src="https://img.shields.io/badge/Donate-PayPal-green.svg" alt="donate"></a></div>
+
 [![Greenkeeper badge](https://badges.greenkeeper.io/Hotell/rea-di.svg)](https://greenkeeper.io/)
 
 [![Build Status](https://travis-ci.org/Hotell/rea-di.svg?branch=master)](https://travis-ci.org/Hotell/rea-di)
